@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Card,
@@ -16,18 +16,47 @@ import {
 import {
   EllipsisVerticalIcon,
   ArrowUpIcon,
+  CheckCircleIcon,
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
 import {
   statisticsCardsData,
   statisticsChartsData,
-  projectsTableData,
   ordersOverviewData,
 } from "@/data";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 
 export function Home() {
+  const [projectsTableData, setProjectsTableData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://tradesphere-backend.onrender.com/api/users/transactions",
+          {
+            method: "GET",
+            headers: {
+              "x-auth-token":
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjozfSwiaWF0IjoxNzE5ODc3NjExLCJleHAiOjE3MTk5MTM2MTF9.X39MKnIBaQdRVG4zfGrw1h3ZfDJM4IfMZzE-m53hFxk",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        console.log("Fetched data:", data);
+        setProjectsTableData(data || []); // Ensure data is initialized as an array
+      } catch (error) {
+        console.error("Error fetching the data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
@@ -41,8 +70,8 @@ export function Home() {
             })}
             footer={
               <Typography className="font-normal text-blue-gray-600">
-                <strong className={footer.color}>{footer.value}</strong>
-                &nbsp;{footer.label}
+                <strong className={footer.color}>{footer.value}</strong>{" "}
+                {footer.label}
               </Typography>
             }
           />
@@ -58,8 +87,11 @@ export function Home() {
                 variant="small"
                 className="flex items-center font-normal text-blue-gray-600"
               >
-                <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
-                &nbsp;{props.footer}
+                <ClockIcon
+                  strokeWidth={2}
+                  className="h-4 w-4 text-blue-gray-400"
+                />
+                {" " + props.footer}
               </Typography>
             }
           />
@@ -81,7 +113,10 @@ export function Home() {
                 variant="small"
                 className="flex items-center gap-1 font-normal text-blue-gray-600"
               >
-                <CheckCircleIcon strokeWidth={3} className="h-4 w-4 text-blue-gray-200" />
+                <CheckCircleIcon
+                  strokeWidth={3}
+                  className="h-4 w-4 text-blue-gray-200"
+                />
                 <strong>30 done</strong> this month
               </Typography>
             </div>
@@ -106,7 +141,7 @@ export function Home() {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["companies", "members", "budget", "completion"].map(
+                  {["Amount", " Type", "Date / Time"].map(
                     (el) => (
                       <th
                         key={el}
@@ -124,72 +159,37 @@ export function Home() {
                 </tr>
               </thead>
               <tbody>
-                {projectsTableData.map(
-                  ({ img, name, members, budget, completion }, key) => {
-                    const className = `py-3 px-5 ${
-                      key === projectsTableData.length - 1
-                        ? ""
-                        : "border-b border-blue-gray-50"
-                    }`;
+  {projectsTableData.map(({ id, user_id, amount, type, created_at }) => (
+    <tr key={id}>
+      {/* <td className="py-3 px-5 border-b border-blue-gray-50">
+        <Typography variant="small" color="blue-gray" className="font-bold">
+          {id}
+        </Typography>
+      </td>
+      <td className="py-3 px-5 border-b border-blue-gray-50">
+        <Typography variant="small" color="blue-gray">
+          {user_id}
+        </Typography>
+      </td> */}
+      <td className="py-3 px-5 border-b border-blue-gray-50">
+        <Typography variant="small" color="blue-gray">
+          {amount}
+        </Typography>
+      </td>
+      <td className="py-3 px-5 border-b border-blue-gray-50">
+        <Typography variant="small" color="blue-gray">
+          {type}
+        </Typography>
+      </td>
+      <td className="py-3 px-5 border-b border-blue-gray-50">
+        <Typography variant="small" color="blue-gray">
+          {created_at}
+        </Typography>
+      </td>
+    </tr>
+  ))}
+</tbody>
 
-                    return (
-                      <tr key={name}>
-                        <td className={className}>
-                          <div className="flex items-center gap-4">
-                            <Avatar src={img} alt={name} size="sm" />
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-bold"
-                            >
-                              {name}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={className}>
-                          {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
-                              />
-                            </Tooltip>
-                          ))}
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            variant="small"
-                            className="text-xs font-medium text-blue-gray-600"
-                          >
-                            {budget}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <div className="w-10/12">
-                            <Typography
-                              variant="small"
-                              className="mb-1 block text-xs font-medium text-blue-gray-600"
-                            >
-                              {completion}%
-                            </Typography>
-                            <Progress
-                              value={completion}
-                              variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-              </tbody>
             </table>
           </CardBody>
         </Card>

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Card,
   Input,
@@ -7,14 +8,81 @@ import {
 } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 
-
 export function SignUp() {
+  const [formData, setFormData] = useState({
+    firstname: '',
+    lastname: '',
+    email: '',
+    password: '',
+  });
+
+  const [loading, setLoading] = useState(false); // State for loading indicator
+  const [error, setError] = useState(null); // State for error message
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true); // Set loading state to true
+
+  const data = {
+    ...formData,
+    role: 'user', // Fixed role
+  };
+
+  try {
+    const response = await fetch('https://tradesphere-backend.onrender.com/api/users/register', {
+      method: 'POST',
+     headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxfSwiaWF0IjoxNzE2NTUwMjQzLCJleHAiOjE3MTY1ODYyNDN9.MEaRX6BFluFiwTNsPqplTd2RYtvhpR3-XlnunvY784g'
+        },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok: ' + response.statusText);
+    }
+
+    const result = await response.json();
+    console.log('Success:', result);
+    
+    // Save token to local storage
+    localStorage.setItem('authToken', result.token);
+
+    alert('User registered successfully');
+
+    setFormData({
+      firstname: '',
+      lastname: '',
+      email: '',
+      password: '',
+    });
+
+    setLoading(false); // Reset loading state
+    setError(null); // Reset error state
+  } catch (error) {
+    console.error('Error:', error);
+    setError(error.message); // Set error message
+  } finally {
+    setLoading(false); // Reset loading state
+  }
+};
+
+
   return (
     <section className="m-8 flex">
-            <div className="w-2/5 h-full hidden lg:block">
+      <div className="w-2/5 h-full hidden lg:block">
         <img
           src="/img/pattern.png"
           className="h-full w-full object-cover rounded-3xl"
+          alt="Pattern"
         />
       </div>
       <div className="w-full lg:w-3/5 flex flex-col items-center justify-center">
@@ -22,14 +90,51 @@ export function SignUp() {
           <Typography variant="h2" className="font-bold mb-4">Join Us Today</Typography>
           <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to register.</Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
+        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmit}>
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Your email
             </Typography>
             <Input
+              name="email"
               size="lg"
               placeholder="name@mail.com"
+              value={formData.email}
+              onChange={handleChange}
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+            <Input
+              name="firstname"
+              size="lg"
+              placeholder="First Name"
+              value={formData.firstname}
+              onChange={handleChange}
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+            <Input
+              name="lastname"
+              size="lg"
+              placeholder="Last Name"
+              value={formData.lastname}
+              onChange={handleChange}
+              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+            <Input
+              name="password"
+              type="password"
+              size="lg"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -43,7 +148,7 @@ export function SignUp() {
                 color="gray"
                 className="flex items-center justify-start font-medium"
               >
-                I agree the&nbsp;
+                I agree to the&nbsp;
                 <a
                   href="#"
                   className="font-normal text-black transition-colors hover:text-gray-900 underline"
@@ -54,9 +159,15 @@ export function SignUp() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button className="mt-6" fullWidth>
-            Register Now
+          <Button className="mt-6" fullWidth type="submit" disabled={loading}>
+            {loading ? 'Registering...' : 'Register Now'}
           </Button>
+
+          {error && (
+            <Typography variant="paragraph" className="text-red-500 mt-4">
+              {error}
+            </Typography>
+          )}
 
           <div className="space-y-4 mt-8">
             <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
@@ -76,7 +187,7 @@ export function SignUp() {
               <span>Sign in With Google</span>
             </Button>
             <Button size="lg" color="white" className="flex items-center gap-2 justify-center shadow-md" fullWidth>
-              <img src="/img/twitter-logo.svg" height={24} width={24} alt="" />
+              <img src="/img/twitter-logo.svg" height={24} width={24} alt="Twitter Logo" />
               <span>Sign in With Twitter</span>
             </Button>
           </div>
@@ -85,7 +196,6 @@ export function SignUp() {
             <Link to="/auth/sign-in" className="text-gray-900 ml-1">Sign in</Link>
           </Typography>
         </form>
-
       </div>
     </section>
   );
