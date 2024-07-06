@@ -9,9 +9,6 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  Avatar,
-  Tooltip,
-  Progress,
 } from "@material-tailwind/react";
 import {
   EllipsisVerticalIcon,
@@ -26,20 +23,33 @@ import {
   statisticsChartsData,
   ordersOverviewData,
 } from "@/data";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import NoTransactionComponent from "@/components/NoTransactionComponent";
 
 export function Home() {
   const [projectsTableData, setProjectsTableData] = useState([]);
+  const [loading, setLoading] = useState(true); // Track loading state
+  const [authenticated, setAuthenticated] = useState(true); // Track authentication state
+  const navigate = useNavigate(); // Initialize useNavigate for navigation
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Start loading state
       try {
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) {
+          // Redirect to sign-in page if token is missing
+          navigate("/auth/sign-in");
+          setAuthenticated(false); // Update authenticated state
+          return;
+        }
+
         const response = await fetch(
           "https://tradesphere-backend.onrender.com/api/users/transactions",
           {
             method: "GET",
             headers: {
-              "x-auth-token":
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjozfSwiaWF0IjoxNzE5ODc3NjExLCJleHAiOjE3MTk5MTM2MTF9.X39MKnIBaQdRVG4zfGrw1h3ZfDJM4IfMZzE-m53hFxk",
+              "x-auth-token": authToken,
             },
           }
         );
@@ -48,14 +58,25 @@ export function Home() {
         }
         const data = await response.json();
         console.log("Fetched data:", data);
-        setProjectsTableData(data || []); // Ensure data is initialized as an array
+        setProjectsTableData(data || []);
+        setLoading(false); // Set loading state to false on successful fetch
+        setAuthenticated(true); // Update authenticated state
       } catch (error) {
         console.error("Error fetching the data", error);
+        // Handle error as needed
+        setLoading(false); // Set loading state to false on error
       }
     };
 
     fetchData();
-  }, []);
+  }, [navigate]); // Include navigate in dependencies to avoid React warnings
+
+  // Redirect to sign-in page if not authenticated
+  useEffect(() => {
+    if (!authenticated) {
+      navigate("/auth/sign-in");
+    }
+  }, [authenticated, navigate]);
 
   return (
     <div className="mt-12">
@@ -138,11 +159,15 @@ export function Home() {
             </Menu>
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
-                <tr>
-                  {["Amount", " Type", "Date / Time"].map(
-                    (el) => (
+            {loading ? (
+              <Typography variant="body" className="p-4 text-center text-blue-gray-500">
+                Loading transactions...
+              </Typography>
+            ) : (
+              <table className="w-full min-w-[640px] table-auto">
+                <thead>
+                  <tr>
+                    {["User ID", "Amount", " Type", "Package", "Date / Time"].map((el) => (
                       <th
                         key={el}
                         className="border-b border-blue-gray-50 py-3 px-6 text-left"
@@ -154,43 +179,53 @@ export function Home() {
                           {el}
                         </Typography>
                       </th>
-                    )
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {projectsTableData.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="py-3 px-5 border-b border-blue-gray-50">
+                        <Typography variant="body" className="p-4 text-center text-blue-gray-500">
+                <NoTransactionComponent/>
+              </Typography>
+          
+                      </td>
+                    </tr>
+                  ) : (
+                    projectsTableData.map(({ id, user_id, amount, type, package_type, created_at }) => (
+                      <tr key={id}>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <Typography variant="small" color="blue-gray">
+                            {user_id}
+                          </Typography>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <Typography variant="small" color="blue-gray">
+                            {amount}
+                          </Typography>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <Typography variant="small" color="blue-gray">
+                            {type}
+                          </Typography>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <Typography variant="small" color="blue-gray">
+                            {package_type}
+                          </Typography>
+                        </td>
+                        <td className="py-3 px-5 border-b border-blue-gray-50">
+                          <Typography variant="small" color="blue-gray">
+                            {created_at}
+                          </Typography>
+                        </td>
+                      </tr>
+                    ))
                   )}
-                </tr>
-              </thead>
-              <tbody>
-  {projectsTableData.map(({ id, user_id, amount, type, created_at }) => (
-    <tr key={id}>
-      {/* <td className="py-3 px-5 border-b border-blue-gray-50">
-        <Typography variant="small" color="blue-gray" className="font-bold">
-          {id}
-        </Typography>
-      </td>
-      <td className="py-3 px-5 border-b border-blue-gray-50">
-        <Typography variant="small" color="blue-gray">
-          {user_id}
-        </Typography>
-      </td> */}
-      <td className="py-3 px-5 border-b border-blue-gray-50">
-        <Typography variant="small" color="blue-gray">
-          {amount}
-        </Typography>
-      </td>
-      <td className="py-3 px-5 border-b border-blue-gray-50">
-        <Typography variant="small" color="blue-gray">
-          {type}
-        </Typography>
-      </td>
-      <td className="py-3 px-5 border-b border-blue-gray-50">
-        <Typography variant="small" color="blue-gray">
-          {created_at}
-        </Typography>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-            </table>
+                </tbody>
+              </table>
+            )}
           </CardBody>
         </Card>
         <Card className="border border-blue-gray-100 shadow-sm">
