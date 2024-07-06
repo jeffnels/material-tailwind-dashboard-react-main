@@ -25,6 +25,7 @@ import {
 } from "@/data";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import NoTransactionComponent from "@/components/NoTransactionComponent";
+import Tables from "@/pages/dashboard/tables";
 
 export function Home() {
   const [projectsTableData, setProjectsTableData] = useState([]);
@@ -69,7 +70,7 @@ export function Home() {
     };
 
     fetchData();
-  }, [navigate]); // Include navigate in dependencies to avoid React warnings
+  }, []); 
 
   // Redirect to sign-in page if not authenticated
   useEffect(() => {
@@ -98,7 +99,7 @@ export function Home() {
           />
         ))}
       </div>
-      <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+      {/* <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
           <StatisticsChart
             key={props.title}
@@ -117,9 +118,9 @@ export function Home() {
             }
           />
         ))}
-      </div>
+      </div> */}
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
+        <Card className="overflow-hidden col-span-3 border border-blue-gray-100 shadow-sm">
           <CardHeader
             floated={false}
             shadow={false}
@@ -228,7 +229,7 @@ export function Home() {
             )}
           </CardBody>
         </Card>
-        <Card className="border border-blue-gray-100 shadow-sm">
+        {/* <Card className="border border-blue-gray-100 shadow-sm">
           <CardHeader
             floated={false}
             shadow={false}
@@ -284,7 +285,8 @@ export function Home() {
               )
             )}
           </CardBody>
-        </Card>
+        </Card> */}
+        {/* <Tables /> */}
       </div>
     </div>
   );

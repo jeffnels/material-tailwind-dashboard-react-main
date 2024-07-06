@@ -1,7 +1,7 @@
 {
   "name": "tradespherehub",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.1.2",
   "type": "module",
   "homepage": "https://admin.tradespherehub.org",
   "scripts": {
