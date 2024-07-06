@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Input,
-  Checkbox,
   Button,
   Typography,
 } from "@material-tailwind/react";
@@ -13,9 +12,11 @@ export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const response = await fetch("https://tradesphere-backend.onrender.com/api/users", {
@@ -37,7 +38,7 @@ export function SignIn() {
       const authToken = data.token;
 
       localStorage.setItem("authToken", authToken);
-      navigate("/home");
+      navigate("/dashboard/home");
     } catch (error) {
       setError(error.message);
       console.error("Error signing in:", error.message);
@@ -46,6 +47,8 @@ export function SignIn() {
       setTimeout(() => {
         setError("");
       }, 5000); // 5000 milliseconds = 5 seconds
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -79,7 +82,7 @@ export function SignIn() {
             <Input
               size="lg"
               placeholder="name@mail.com"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -94,14 +97,14 @@ export function SignIn() {
               type="password"
               size="lg"
               placeholder="********"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-         
-          <Button type="submit" className="mt-6" fullWidth>
-            Sign In
+
+          <Button type="submit" className="mt-6" fullWidth disabled={isLoading}>
+            {isLoading ? "Signing In..." : "Sign In"}
           </Button>
 
           {error && (

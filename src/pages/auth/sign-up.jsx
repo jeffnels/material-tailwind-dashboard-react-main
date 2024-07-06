@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import {
-  Card,
   Input,
-  Checkbox,
   Button,
   Typography,
 } from "@material-tailwind/react";
@@ -19,7 +18,7 @@ export function SignUp() {
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [error, setError] = useState(null); // State for error message
   const [successMessage, setSuccessMessage] = useState(null); // State for success message
-
+const navigate = useNavigate()
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -66,7 +65,7 @@ export function SignUp() {
 
       // Set success message
       setSuccessMessage('User registered successfully');
-
+ navigate("/auth/sign-in");
       // Clear form data
       setFormData({
         firstname: '',
@@ -86,7 +85,7 @@ export function SignUp() {
   };
 
   // Clear success message after 5 seconds
-  React.useEffect(() => {
+  useEffect(() => {
     let timeout;
     if (successMessage) {
       timeout = setTimeout(() => {
@@ -161,7 +160,7 @@ export function SignUp() {
               }}
             />
           </div>
-         
+
           <Button className="mt-6" fullWidth type="submit" disabled={loading}>
             {loading ? 'Registering...' : 'Register Now'}
           </Button>
