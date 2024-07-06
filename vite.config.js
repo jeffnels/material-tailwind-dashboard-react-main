@@ -15,6 +15,10 @@ export default defineConfig({
           }
         }
       }
-    }
+    },
+    chunkSizeWarningLimit: 1000 // Adjust as needed
+  },
+  server: {
+    historyApiFallback: true // For Vite dev server
   }
 });
