@@ -5,7 +5,7 @@ import {
   Sidenav,
   DashboardNavbar,
   Configurator,
-  Footer,
+  // Footer,
 } from "@/widgets/layout";
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
@@ -24,7 +24,7 @@ export function Dashboard() {
       />
       <div className="p-4 xl:ml-80">
         <DashboardNavbar />
-        <Configurator />
+        {/* <Configurator /> */}
         <IconButton
           size="lg"
           color="white"
@@ -44,7 +44,7 @@ export function Dashboard() {
           )}
         </Routes>
         <div className="text-blue-gray-600">
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </div>
     </div>
