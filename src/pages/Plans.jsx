@@ -1,12 +1,45 @@
 import React, { useState } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 
+const plans = [
+  {
+    name: "Basic Portfolio Plan",
+    amount: "$200-$999",
+    return: "10% daily",
+    duration: "7 days",
+  },
+  {
+    name: "Standard Portfolio Plan",
+    amount: "$1000-$9999",
+    return: "20% daily",
+    duration: "7 days",
+  },
+  {
+    name: "Premium Portfolio Plan",
+    amount: "$10000-$99999",
+    return: "30% daily",
+    duration: "7 days",
+  },
+  {
+    name: "Elite Portfolio Plan",
+    amount: "$100000-$999999",
+    return: "45% daily",
+    duration: "14 days",
+  },
+  {
+    name: "VIP Portfolio Plan",
+    amount: "$1000000-$10000000",
+    return: "55% daily",
+    duration: "28 days",
+  },
+];
+
 const Pricing = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
 
-  const openModal = (planIndex) => {
-    setSelectedPlan(planIndex);
+  const openModal = (plan) => {
+    setSelectedPlan(plan);
     setIsOpen(true);
   };
 
@@ -23,20 +56,26 @@ const Pricing = () => {
           </Typography>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {Array.from({ length: 5 }).map((_, index) => (
+            {plans.map((plan, index) => (
               <div key={index} className="bg-white p-6 rounded-xl shadow-md">
                 <Typography variant="h4" className="font-bold mb-4 text-center">
-                  Plan {index + 1}
+                  {plan.name}
                 </Typography>
                 <Typography variant="paragraph" className="text-center mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                  Amount: {plan.amount}
+                </Typography>
+                <Typography variant="paragraph" className="text-center mb-4">
+                  Return: {plan.return}
+                </Typography>
+                <Typography variant="paragraph" className="text-center mb-4">
+                  Duration: {plan.duration}
                 </Typography>
                 <div className="flex justify-center">
                   <Button
                     variant="outlined"
                     color="blue"
                     className="mt-4"
-                    onClick={() => openModal(index + 1)}
+                    onClick={() => openModal(plan)}
                   >
                     Choose Plan
                   </Button>
@@ -52,12 +91,17 @@ const Pricing = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
             <Typography variant="h4" className="text-center font-bold mb-4">
-              Plan {selectedPlan}
+              {selectedPlan.name}
             </Typography>
             <Typography variant="paragraph" className="text-center mb-4">
-              You have selected Plan {selectedPlan}. More details about the plan can go here.
+              Amount: {selectedPlan.amount}
             </Typography>
-
+            <Typography variant="paragraph" className="text-center mb-4">
+              Return: {selectedPlan.return}
+            </Typography>
+            <Typography variant="paragraph" className="text-center mb-4">
+              Duration: {selectedPlan.duration}
+            </Typography>
             <div className="flex justify-center">
               <Button variant="outlined" color="blue" onClick={closeModal}>
                 Close
