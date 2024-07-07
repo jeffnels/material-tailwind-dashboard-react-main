@@ -46,7 +46,7 @@ export function Home() {
         }
 
         const response = await fetch(
-          "https://tradesphere-backend.onrender.com/api/users/transactions",
+          "https://tradesphere-backend.onrender.com/api/users/transactions/client",
           {
             method: "GET",
             headers: {
