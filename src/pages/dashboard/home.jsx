@@ -26,6 +26,7 @@ import {
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import NoTransactionComponent from "@/components/NoTransactionComponent";
 import Tables from "@/pages/dashboard/tables";
+import KycButton from "@/components/KycButton";
 
 export function Home() {
   const [projectsTableData, setProjectsTableData] = useState([]);
@@ -81,6 +82,7 @@ export function Home() {
 
   return (
     <div className="mt-12">
+      <KycButton/>
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
           <StatisticsCard
@@ -99,6 +101,7 @@ export function Home() {
           />
         ))}
       </div>
+      
       {/* <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
           <StatisticsChart
@@ -127,6 +130,7 @@ export function Home() {
             color="transparent"
             className="m-0 flex items-center justify-between p-6"
           >
+            
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-1">
                 Projects

@@ -37,6 +37,8 @@ const plans = [
 const Pricing = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   const openModal = (plan) => {
     setSelectedPlan(plan);
@@ -45,6 +47,18 @@ const Pricing = () => {
 
   const closeModal = () => {
     setIsOpen(false);
+    setPaymentModalOpen(false);
+  };
+
+  const handlePaymentMethodChange = (event) => {
+    setPaymentMethod(event.target.value);
+  };
+
+  const handleSelectPlan = () => {
+    if (paymentMethod) {
+      setIsOpen(false);
+      setPaymentModalOpen(true);
+    }
   };
 
   return (
@@ -86,7 +100,7 @@ const Pricing = () => {
         </div>
       </section>
 
-      {/* Modal */}
+      {/* Main Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
@@ -102,7 +116,88 @@ const Pricing = () => {
             <Typography variant="paragraph" className="text-center mb-4">
               Duration: {selectedPlan.duration}
             </Typography>
+            <div className="flex justify-center mb-4">
+              <select
+                className="border border-gray-300 rounded-lg p-2"
+                value={paymentMethod}
+                onChange={handlePaymentMethodChange}
+              >
+                <option value="" disabled>Select Payment Method</option>
+                <option value="bank">Bank</option>
+                <option value="cashapp">CashApp</option>
+                <option value="crypto">Crypto</option>
+              </select>
+            </div>
             <div className="flex justify-center">
+              <Button variant="outlined" color="blue" onClick={handleSelectPlan}>
+                Select Plan
+              </Button>
+            </div>
+            <div className="flex justify-center mt-4">
+              <Button variant="outlined" color="blue" onClick={closeModal}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Method Modal */}
+      {paymentModalOpen && paymentMethod === "bank" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
+            <Typography variant="h4" className="text-center font-bold mb-4">
+              Bank Payment
+            </Typography>
+            <Typography variant="paragraph" className="text-center mb-4">
+              {selectedPlan.name}
+            </Typography>
+            <Typography variant="paragraph" className="text-center mb-4">
+              Please proceed with the bank payment instructions.
+            </Typography>
+            <div className="flex justify-center mt-4">
+              <Button variant="outlined" color="blue" onClick={closeModal}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {paymentModalOpen && paymentMethod === "cashapp" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
+            <Typography variant="h4" className="text-center font-bold mb-4">
+              CashApp Payment
+            </Typography>
+            <Typography variant="paragraph" className="text-center mb-4">
+              {selectedPlan.name}
+            </Typography>
+            <Typography variant="paragraph" className="text-center mb-4">
+              Please proceed with the CashApp payment instructions.
+            </Typography>
+            <div className="flex justify-center mt-4">
+              <Button variant="outlined" color="blue" onClick={closeModal}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {paymentModalOpen && paymentMethod === "crypto" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
+            <Typography variant="h4" className="text-center font-bold mb-4">
+              Crypto Payment
+            </Typography>
+            <Typography variant="paragraph" className="text-center mb-4">
+              {selectedPlan.name}
+            </Typography>
+            <Typography variant="paragraph" className="text-center mb-4">
+              Please proceed with the crypto payment instructions.
+            </Typography>
+            <div className="flex justify-center mt-4">
               <Button variant="outlined" color="blue" onClick={closeModal}>
                 Close
               </Button>
