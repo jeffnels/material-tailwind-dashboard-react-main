@@ -1,3 +1,4 @@
+import avatar from '../images/avatar.png';
 import React, { useState } from 'react';
 
 const KycButton = () => {
@@ -15,12 +16,18 @@ const KycButton = () => {
 
       {isFirstModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-10">
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bg-white flex items-center justify-center rounded-lg shadow-lg p-6 flex-col relative">
+            <button
+              className="absolute top-2 right-2 text-black hover:text-red-700"
+              onClick={() => setIsFirstModalOpen(false)}
+            >
+              &times;
+            </button>
             <h2 className="text-xl font-semibold mb-4">KYC Verification</h2>
             <img
-              src="https://via.placeholder.com/150"
+              src={avatar}
               alt="Placeholder"
-              className="mb-4"
+              className="h-20 w-20 mb-6"
             />
             <button
               className="bg-black text-white px-4 py-2 rounded"
@@ -37,7 +44,13 @@ const KycButton = () => {
 
       {isSecondModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-10">
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bg-white rounded-lg shadow-lg p-6 relative">
+            <button
+              className="absolute top-2 right-2 text-black hover:text-red-700"
+              onClick={() => setIsSecondModalOpen(false)}
+            >
+              &times;
+            </button>
             <h2 className="text-xl font-semibold mb-4">Identity Verification</h2>
             <form className="grid grid-cols-2 gap-4">
               <div>
@@ -65,6 +78,20 @@ const KycButton = () => {
                 <label className="block text-sm font-medium">Country</label>
                 <input
                   type="text"
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">City</label>
+                <input
+                  type="text"
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Social Security Number (SSN)</label>
+                <input
+                  type="number"
                   className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                 />
               </div>
