@@ -34,7 +34,7 @@ const plans = [
   },
 ];
 
-const Pricing = () => {
+export const Plans = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -65,14 +65,14 @@ const Pricing = () => {
     <>
       <section className="py-12 bg-gray-100">
         <div className="container mx-auto px-4">
-          <Typography variant="h2" className="text-center font-bold mb-12">
+          <Typography variant="h3" className="text-center font-bold mb-12">
             Our Pricing Plans
           </Typography>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {plans.map((plan, index) => (
               <div key={index} className="bg-white p-6 rounded-xl shadow-md">
-                <Typography variant="h4" className="font-bold mb-4 text-center">
+                <Typography variant="h5`" className="font-bold mb-4 text-center">
                   {plan.name}
                 </Typography>
                 <Typography variant="paragraph" className="text-center mb-4">
@@ -209,4 +209,4 @@ const Pricing = () => {
   );
 };
 
-export default Pricing;
+ 
