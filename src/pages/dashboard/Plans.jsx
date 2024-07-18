@@ -39,6 +39,7 @@ export const Plans = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [amount, setAmount] = useState('');
 
   const openModal = (plan) => {
     setSelectedPlan(plan);
@@ -61,6 +62,38 @@ export const Plans = () => {
     }
   };
 
+  const handleAmountChange = (event) => {
+    setAmount(event.target.value);
+  };
+
+  const handleDone = async () => {
+  try {
+    const response = await fetch('http:///tradesphere-backend.onrender.com/api/users/transactions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjozfSwiaWF0IjoxNzE4NTkwMzEyLCJleHAiOjE3MTg2MjYzMTJ9.GqblDA4JqHCMJT5mRjSUPLqqaEp0YX6OTMdJMsznxY8'
+      },
+      body: JSON.stringify({
+        amount: amount, // Ensure 'amount' is defined and has a valid value
+        type: 'credit',
+        package: selectedPlan.name // Ensure 'selectedPlan' is defined and has a valid value
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Created transaction:', data);
+    closeModal();
+  } catch (error) {
+    console.error('Error creating transaction:', error.message);
+  }
+};
+
+
   return (
     <>
       <section className="py-12 bg-gray-100">
@@ -72,7 +105,7 @@ export const Plans = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {plans.map((plan, index) => (
               <div key={index} className="bg-white p-6 rounded-xl shadow-md">
-                <Typography variant="h5`" className="font-bold mb-4 text-center">
+                <Typography variant="h5" className="font-bold mb-4 text-center">
                   {plan.name}
                 </Typography>
                 <Typography variant="paragraph" className="text-center mb-4">
@@ -117,6 +150,15 @@ export const Plans = () => {
               Duration: {selectedPlan.duration}
             </Typography>
             <div className="flex justify-center mb-4">
+              <input
+                type="number"
+                className="border border-gray-300 rounded-lg p-2"
+                value={amount}
+                onChange={handleAmountChange}
+                placeholder="Enter Amount"
+              />
+            </div>
+            <div className="flex justify-center mb-4">
               <select
                 className="border border-gray-300 rounded-lg p-2"
                 value={paymentMethod}
@@ -156,6 +198,11 @@ export const Plans = () => {
               Please proceed with the bank payment instructions.
             </Typography>
             <div className="flex justify-center mt-4">
+              <Button variant="outlined" color="blue" onClick={handleDone}>
+                Done
+              </Button>
+            </div>
+            <div className="flex justify-center mt-4">
               <Button variant="outlined" color="blue" onClick={closeModal}>
                 Close
               </Button>
@@ -176,6 +223,11 @@ export const Plans = () => {
             <Typography variant="paragraph" className="text-center mb-4">
               Please proceed with the CashApp payment instructions.
             </Typography>
+            <div className="flex justify-center mt-4">
+              <Button variant="outlined" color="blue" onClick={handleDone}>
+                Done
+              </Button>
+            </div>
             <div className="flex justify-center mt-4">
               <Button variant="outlined" color="blue" onClick={closeModal}>
                 Close
@@ -198,6 +250,11 @@ export const Plans = () => {
               Please proceed with the crypto payment instructions.
             </Typography>
             <div className="flex justify-center mt-4">
+              <Button variant="outlined" color="blue" onClick={handleDone}>
+                Done
+              </Button>
+            </div>
+            <div className="flex justify-center mt-4">
               <Button variant="outlined" color="blue" onClick={closeModal}>
                 Close
               </Button>
@@ -208,5 +265,3 @@ export const Plans = () => {
     </>
   );
 };
-
- 
