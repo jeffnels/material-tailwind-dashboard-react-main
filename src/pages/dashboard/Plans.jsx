@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+import { useSpring, animated } from '@react-spring/web';
 
 const plans = [
   {
@@ -34,6 +36,51 @@ const plans = [
   },
 ];
 
+const Modal = ({ isOpen, children, onClose, loading }) => {
+  const fade = useSpring({
+    opacity: isOpen ? 1 : 0,
+    transform: isOpen ? 'translateY(0)' : 'translateY(-50px)',
+    config: { tension: 220, friction: 20 },
+  });
+
+  return (
+    <animated.div
+      style={fade}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'} bg-black bg-opacity-50 transition-all`}
+    >
+      <div className="relative bg-white rounded-xl shadow-md max-w-md mx-auto w-[22rem] p-6">
+        <div className="absolute top-4 right-4 text-red-800 font-extrabold cursor-pointer" onClick={onClose}>
+          x
+        </div>
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <div style={{
+              border: '4px solid blue',
+              borderRadius: '50%',
+              borderTop: '4px solid #3498db',
+              width: '50px',
+              height: '50px',
+              animation: 'spin 1s linear infinite',
+            }}>
+              
+            </div>
+            <style>
+              {`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}
+            </style>
+          </div>
+        ) : (
+          children
+        )}
+      </div>
+    </animated.div>
+  );
+};
+
 export const Plans = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -41,6 +88,9 @@ export const Plans = () => {
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [amount, setAmount] = useState('');
   const [transactions, setTransactions] = useState([]);
+  const [authenticated, setAuthenticated] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const openModal = (plan) => {
     setSelectedPlan(plan);
@@ -68,26 +118,27 @@ export const Plans = () => {
   };
 
   const handleDone = async () => {
+    setLoading(true);
     try {
-      const token = localStorage.getItem('x-auth-token');
+      const token = localStorage.getItem('authToken');
       if (!token) {
         console.error('No token found in local storage');
+        navigate("/auth/sign-in");
+        setAuthenticated(false);
         return;
       }
 
-      console.log('Retrieved token:', token);
-
-      const response = await fetch('https:/tradesphere-backend.onrender.com/api/users/transactions', {
+      const response = await fetch('https://tradesphere-backend.onrender.com/api/users/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-auth-token': token
+          'x-auth-token': token,
         },
         body: JSON.stringify({
           amount: amount,
           type: 'credit',
-          package: selectedPlan.name
-        })
+          package: selectedPlan.name,
+        }),
       });
 
       if (!response.ok) {
@@ -99,6 +150,8 @@ export const Plans = () => {
       closeModal();
     } catch (error) {
       console.error('Error creating transaction:', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,16 +161,16 @@ export const Plans = () => {
         const token = localStorage.getItem('authToken');
         if (!token) {
           console.error('No token found in local storage');
+          navigate("/auth/sign-in");
+          setAuthenticated(false);
           return;
         }
 
-        console.log('Retrieved token:', token);
-
-        const response = await fetch('https:/tradesphere-backend.onrender.com/api/users/transactions', {
+        const response = await fetch('https://tradesphere-backend.onrender.com/api/users/transactions', {
           method: 'GET',
           headers: {
-            'x-auth-token': token
-          }
+            'x-auth-token': token,
+          },
         });
 
         if (!response.ok) {
@@ -133,7 +186,13 @@ export const Plans = () => {
     };
 
     fetchTransactions();
-  }, []);
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!authenticated) {
+      navigate("/auth/sign-in");
+    }
+  }, [authenticated, navigate]);
 
   return (
     <>
@@ -174,10 +233,9 @@ export const Plans = () => {
         </div>
       </section>
 
-      {/* Main Modal */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
+      <Modal isOpen={isOpen} onClose={closeModal} loading={loading}>
+        {selectedPlan && (
+          <>
             <Typography variant="h4" className="text-center font-bold mb-4">
               {selectedPlan.name}
             </Typography>
@@ -216,93 +274,60 @@ export const Plans = () => {
                 Select Plan
               </Button>
             </div>
-            <div className="flex justify-center mt-4">
-              <Button variant="outlined" color="blue" onClick={closeModal}>
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </Modal>
 
-      {/* Payment Method Modal */}
-      {paymentModalOpen && paymentMethod === "bank" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
-            <Typography variant="h4" className="text-center font-bold mb-4">
-              Bank Payment
-            </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
-              {selectedPlan.name}
-            </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
-              Please proceed with the bank payment instructions.
-            </Typography>
-            <div className="flex justify-center mt-4">
-              <Button variant="outlined" color="blue" onClick={handleDone}>
-                Done
-              </Button>
-            </div>
-            <div className="flex justify-center mt-4">
-              <Button variant="outlined" color="blue" onClick={closeModal}>
-                Close
-              </Button>
-            </div>
-          </div>
+      <Modal isOpen={paymentModalOpen && paymentMethod === "bank"} onClose={closeModal} loading={loading}>
+        <Typography variant="h4" className="text-center font-bold mb-4">
+          Bank Payment
+        </Typography>
+        <Typography variant="paragraph" className="text-center mb-4">
+          {selectedPlan?.name}
+        </Typography>
+        <Typography variant="paragraph" className="text-center mb-4">
+          Please proceed with the bank payment instructions.
+        </Typography>
+        <div className="flex justify-center mt-4">
+          <Button variant="outlined" color="blue" onClick={handleDone}>
+            Done
+          </Button>
         </div>
-      )}
+      </Modal>
 
-      {paymentModalOpen && paymentMethod === "cashapp" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
-            <Typography variant="h4" className="text-center font-bold mb-4">
-              CashApp Payment
-            </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
-              {selectedPlan.name}
-            </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
-              Please proceed with the CashApp payment instructions.
-            </Typography>
-            <div className="flex justify-center mt-4">
-              <Button variant="outlined" color="blue" onClick={handleDone}>
-                Done
-              </Button>
-            </div>
-            <div className="flex justify-center mt-4">
-              <Button variant="outlined" color="blue" onClick={closeModal}>
-                Close
-              </Button>
-            </div>
-          </div>
+      <Modal isOpen={paymentModalOpen && paymentMethod === "cashapp"} onClose={closeModal} loading={loading}>
+        <Typography variant="h4" className="text-center font-bold mb-4">
+          CashApp Payment
+        </Typography>
+        <Typography variant="paragraph" className="text-center mb-4">
+          {selectedPlan?.name}
+        </Typography>
+        <Typography variant="paragraph" className="text-center mb-4">
+          Please proceed with the CashApp payment instructions.
+        </Typography>
+        <div className="flex justify-center mt-4">
+          <Button variant="outlined" color="blue" onClick={handleDone}>
+            Done
+          </Button>
         </div>
-      )}
+      </Modal>
 
-      {paymentModalOpen && paymentMethod === "crypto" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl shadow-md max-w-md mx-auto p-6">
-            <Typography variant="h4" className="text-center font-bold mb-4">
-              Crypto Payment
-            </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
-              {selectedPlan.name}
-            </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
-              Please proceed with the crypto payment instructions.
-            </Typography>
-            <div className="flex justify-center mt-4">
-              <Button variant="outlined" color="blue" onClick={handleDone}>
-                Done
-              </Button>
-            </div>
-            <div className="flex justify-center mt-4">
-              <Button variant="outlined" color="blue" onClick={closeModal}>
-                Close
-              </Button>
-            </div>
-          </div>
+      <Modal isOpen={paymentModalOpen && paymentMethod === "crypto"} onClose={closeModal} loading={loading}>
+        <Typography variant="h4" className="text-center font-bold mb-4">
+          Crypto Payment
+        </Typography>
+        <Typography variant="paragraph" className="text-center mb-4">
+          {selectedPlan?.name}
+        </Typography>
+        <Typography variant="paragraph" className="text-center mb-4">
+          Please proceed with the crypto payment instructions.
+        </Typography>
+        <div className="flex justify-center mt-4">
+          <Button variant="outlined" color="blue" onClick={handleDone}>
+            Done
+          </Button>
         </div>
-      )}
+      </Modal>
     </>
   );
 };
