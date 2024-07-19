@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 
 const plans = [
@@ -40,6 +40,7 @@ export const Plans = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [amount, setAmount] = useState('');
+  const [transactions, setTransactions] = useState([]);
 
   const openModal = (plan) => {
     setSelectedPlan(plan);
@@ -67,32 +68,72 @@ export const Plans = () => {
   };
 
   const handleDone = async () => {
-  try {
-    const response = await fetch('http:///tradesphere-backend.onrender.com/api/users/transactions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjozfSwiaWF0IjoxNzE4NTkwMzEyLCJleHAiOjE3MTg2MjYzMTJ9.GqblDA4JqHCMJT5mRjSUPLqqaEp0YX6OTMdJMsznxY8'
-      },
-      body: JSON.stringify({
-        amount: amount, // Ensure 'amount' is defined and has a valid value
-        type: 'credit',
-        package: selectedPlan.name // Ensure 'selectedPlan' is defined and has a valid value
-      })
-    });
+    try {
+      const token = localStorage.getItem('x-auth-token');
+      if (!token) {
+        console.error('No token found in local storage');
+        return;
+      }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.log('Retrieved token:', token);
+
+      const response = await fetch('https:/tradesphere-backend.onrender.com/api/users/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        },
+        body: JSON.stringify({
+          amount: amount,
+          type: 'credit',
+          package: selectedPlan.name
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Created transaction:', data);
+      closeModal();
+    } catch (error) {
+      console.error('Error creating transaction:', error.message);
     }
+  };
 
-    const data = await response.json();
-    console.log('Created transaction:', data);
-    closeModal();
-  } catch (error) {
-    console.error('Error creating transaction:', error.message);
-  }
-};
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          console.error('No token found in local storage');
+          return;
+        }
 
+        console.log('Retrieved token:', token);
+
+        const response = await fetch('https:/tradesphere-backend.onrender.com/api/users/transactions', {
+          method: 'GET',
+          headers: {
+            'x-auth-token': token
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setTransactions(data);
+        console.log('Fetched transactions:', data);
+      } catch (error) {
+        console.error('Error fetching transactions:', error.message);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
 
   return (
     <>
