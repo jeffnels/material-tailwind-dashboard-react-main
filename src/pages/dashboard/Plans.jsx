@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { useSpring, animated } from '@react-spring/web';
-
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import Loader from '@/components/Loader';
 const plans = [
   {
     name: "Basic Portfolio Plan",
@@ -49,30 +50,32 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
       className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'} bg-black bg-opacity-50 transition-all`}
     >
       <div className="relative bg-white rounded-xl shadow-md max-w-md mx-auto w-[22rem] p-6">
-        <div className="absolute top-4 right-4 text-red-800 font-extrabold cursor-pointer" onClick={onClose}>
-          x
+        <div style={{ display: loading ? 'none' : 'block' }}>
+<XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700 absolute right-2 top-2"  onClick={onClose} /> 
         </div>
+       
         {loading ? (
-          <div className="flex justify-center items-center h-full">
-            <div style={{
-              border: '4px solid blue',
-              borderRadius: '50%',
-              borderTop: '4px solid #3498db',
-              width: '50px',
-              height: '50px',
-              animation: 'spin 1s linear infinite',
-            }}>
+      //     <div className="flex justify-center items-center h-full">
+      //       <div style={{
+      //         border: '4px solid blue',
+      //         borderRadius: '50%',
+      //         borderTop: '4px solid #3498db',
+      //         width: '50px',
+      //         height: '50px',
+      //         animation: 'spin 1s linear infinite',
+      //       }}>
               
-            </div>
-            <style>
-              {`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}
-            </style>
-          </div>
+      //       </div>
+      //       <style>
+      //         {`
+      //   @keyframes spin {
+      //     0% { transform: rotate(0deg); }
+      //     100% { transform: rotate(360deg); }
+      //   }
+      // `}
+      //       </style>
+      //     </div>
+      <Loader/>
         ) : (
           children
         )}
