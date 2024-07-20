@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useSpring, animated } from '@react-spring/web';
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Loader from '@/components/Loader';
+import { Toast } from 'flowbite-react';
+
 const plans = [
   {
     name: "Basic Portfolio Plan",
@@ -51,31 +53,11 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
     >
       <div className="relative bg-white rounded-xl shadow-md max-w-md mx-auto w-[22rem] p-6">
         <div style={{ display: loading ? 'none' : 'block' }}>
-<XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700 absolute right-2 top-2"  onClick={onClose} /> 
+          <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700 absolute right-2 top-2" onClick={onClose} />
         </div>
-       
+
         {loading ? (
-      //     <div className="flex justify-center items-center h-full">
-      //       <div style={{
-      //         border: '4px solid blue',
-      //         borderRadius: '50%',
-      //         borderTop: '4px solid #3498db',
-      //         width: '50px',
-      //         height: '50px',
-      //         animation: 'spin 1s linear infinite',
-      //       }}>
-              
-      //       </div>
-      //       <style>
-      //         {`
-      //   @keyframes spin {
-      //     0% { transform: rotate(0deg); }
-      //     100% { transform: rotate(360deg); }
-      //   }
-      // `}
-      //       </style>
-      //     </div>
-      <Loader/>
+          <Loader />
         ) : (
           children
         )}
@@ -93,6 +75,9 @@ export const Plans = () => {
   const [transactions, setTransactions] = useState([]);
   const [authenticated, setAuthenticated] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success');
   const navigate = useNavigate();
 
   const openModal = (plan) => {
@@ -150,9 +135,17 @@ export const Plans = () => {
 
       const data = await response.json();
       console.log('Created transaction:', data);
+      setToastMessage('Your transaction has been successfully created!');
+      setToastType('success');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
       closeModal();
     } catch (error) {
       console.error('Error creating transaction:', error.message);
+      setToastMessage(`Error: ${error.message}`);
+      setToastType('error');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     } finally {
       setLoading(false);
     }
@@ -331,6 +324,19 @@ export const Plans = () => {
           </Button>
         </div>
       </Modal>
+
+      {showToast && (
+        <Toast
+          onClose={() => setShowToast(false)}
+          color={toastType}
+          className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-500'}`}
+        >
+          <div className="flex items-center">
+            <span className="mr-2">{toastType === 'success' ? '✓' : '✗'}</span>
+            <span>{toastMessage}</span>
+          </div>
+        </Toast>
+      )}
     </>
   );
 };

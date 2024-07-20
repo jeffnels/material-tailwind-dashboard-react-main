@@ -1,36 +1,83 @@
 import React, { useState, useEffect } from 'react';
 import avatar from '../images/avatar.png';
+import { Toast } from 'flowbite-react';
 
 const KycButton = () => {
   const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
   const [address, setAddress] = useState('');
-  const [addressSuggestions, setAddressSuggestions] = useState([]);
   const [country, setCountry] = useState('');
-  const [countrySuggestions, setCountrySuggestions] = useState([]);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    dob: '',
+    idNumber: '',
+    idType: '',
+    address: '',
+    expiryDate: '',
+    frontImage: null,
+    backImage: null,
+  });
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('');
 
   useEffect(() => {
-    if (address.length >= 3) {
-      fetch(`https://nominatim.openstreetmap.org/search?q=${address}&format=json&addressdetails=1`)
-        .then(response => response.json())
-        .then(data => setAddressSuggestions(data));
-    } else {
-      setAddressSuggestions([]);
+    let timer;
+    if (toastMessage) {
+      timer = setTimeout(() => {
+        setToastMessage('');
+      }, 3000); // 3 seconds timeout
     }
-  }, [address]);
+    return () => clearTimeout(timer);
+  }, [toastMessage]);
 
-  useEffect(() => {
-    if (country.length >= 3) {
-      fetch(`https://nominatim.openstreetmap.org/search?country=${country}&format=json&addressdetails=1`)
-        .then(response => response.json())
-        .then(data => {
-          const countries = data.map((item) => item.address.country).filter((value, index, self) => self.indexOf(value) === index);
-          setCountrySuggestions(countries);
-        });
-    } else {
-      setCountrySuggestions([]);
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: type === 'file' ? files[0] : value,
+    }));
+  };
+
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+    setFormData(prevState => ({
+      ...prevState,
+      address: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+
+    // Example validation and submission handling
+    if (!formData.firstName || !formData.lastName || !formData.address || !formData.idNumber) {
+      setToastMessage('Please fill in all required fields.');
+      setToastType('error');
+      return;
     }
-  }, [country]);
+
+    // Simulate form submission success
+    setToastMessage('Form submitted successfully!');
+    setToastType('success');
+console.log('success');
+    // Clear form inputs on successful submission
+    setFormData({
+      firstName: '',
+      lastName: '',
+      dob: '',
+      idNumber: '',
+      idType: '',
+      address: '',
+      expiryDate: '',
+      frontImage: null,
+      backImage: null,
+    });
+    setAddress('');
+    setCountry('');
+    setIsSecondModalOpen(false);
+  };
 
   return (
     <div>
@@ -50,7 +97,7 @@ const KycButton = () => {
             >
               &times;
             </button>
-            <h2 className="text-lg font-semibold mb-4"> Verify Identity</h2>
+            <h2 className="text-lg font-semibold mb-4">Verify Identity</h2>
             <img
               src={avatar}
               alt="Placeholder"
@@ -79,122 +126,123 @@ const KycButton = () => {
               &times;
             </button>
             <h2 className="text-xl font-semibold mb-4">Identity Verification</h2>
+            {toastMessage && (
+              <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+                <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')}>
+                  {toastMessage}
+                </Toast>
+              </div>
+            )}
             <div className="overflow-y-auto max-h-[75vh]">
-              <form className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-8">
+              <form className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-8" onSubmit={handleSubmit}>
                 <div>
                   <label className="text-sm font-medium">First Name</label>
                   <input
                     type="text"
+                    name="firstName"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={formData.firstName}
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Last Name</label>
                   <input
                     type="text"
+                    name="lastName"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={formData.lastName}
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Date of Birth</label>
                   <input
                     type="date"
+                    name="dob"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={formData.dob}
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">ID Number</label>
                   <input
                     type="text"
+                    name="idNumber"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={formData.idNumber}
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Type of ID</label>
-                  <select className="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                  <select
+                    name="idType"
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={formData.idType}
+                    onChange={handleChange}
+                  >
                     <option value="passport">Passport</option>
                     <option value="drivers_license">Driver's License</option>
                   </select>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Country</label>
-                  <input
-                    type="text"
+                  <select
+                    name="country"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
-                  />
-                  {countrySuggestions.length > 0 && (
-                    <div className="border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto bg-white">
-                      {countrySuggestions.map((suggestion, index) => (
-                        <div
-                          key={index}
-                          className="p-2 cursor-pointer hover:bg-gray-100"
-                          onClick={() => {
-                            setCountry(suggestion);
-                            setCountrySuggestions([]);
-                          }}
-                        >
-                          {suggestion}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  >
+                    <option value="">Select a country</option>
+                    {/* List of countries */}
+                    <option value="Afghanistan">Afghanistan</option>
+                    {/* Add more countries here */}
+                  </select>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Address</label>
                   <input
                     type="text"
+                    name="address"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                     value={address}
-                    onChange={(e) => setAddress(e.target.value)}
+                    onChange={handleAddressChange}
                   />
-                  {addressSuggestions.length > 0 && (
-                    <div className="border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto bg-white">
-                      {addressSuggestions.map((suggestion) => (
-                        <div
-                          key={suggestion.place_id}
-                          className="p-2 cursor-pointer hover:bg-gray-100"
-                          onClick={() => {
-                            setAddress(suggestion.display_name);
-                            setAddressSuggestions([]);
-                          }}
-                        >
-                          {suggestion.display_name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
                 <div>
                   <label className="text-sm font-medium">Expiry Date</label>
                   <input
                     type="date"
+                    name="expiryDate"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    value={formData.expiryDate}
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Upload Document Image (front)</label>
                   <input
                     type="file"
+                    name="frontImage"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium">Upload Document Image (back)</label>
                   <input
                     type="file"
+                    name="backImage"
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                    onChange={handleChange}
                   />
                 </div>
-                <div className="col-span-1 sm:col-span-2">
+                <div className="col-span-2">
                   <button
                     type="submit"
                     className="bg-black text-white px-4 py-2 rounded w-full"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsSecondModalOpen(false);
-                    }}
                   >
                     Submit
                   </button>
