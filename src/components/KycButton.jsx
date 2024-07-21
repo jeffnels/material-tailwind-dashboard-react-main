@@ -89,7 +89,7 @@ const KycButton = () => {
       </button>
 
       {isFirstModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-[0.5] z-50">
           <div className="bg-white flex items-center justify-between rounded-lg shadow-lg p-8 flex-col relative w-full max-w-md h-[300px]">
             <button
               className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
@@ -123,7 +123,7 @@ const KycButton = () => {
         </div>
       )}
       {isSecondModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-[0.5] z-50">
           <div className="bg-white rounded-md shadow-lg p-6 relative max-w-3xl w-full mx-4 h-[90%]">
             <button
               className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
@@ -131,7 +131,7 @@ const KycButton = () => {
             >
               &times;
             </button>
-            <h2 className="text-xl font-semibold mb-4">Identity Verification</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">Identity Verification</h2>
             {toastMessage && (
               <div className={` z-10 fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>
                 <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')} style={{ backgroundColor: toastType === 'error' ? 'red' : 'green', color: 'white' }}>
@@ -488,7 +488,7 @@ const KycButton = () => {
                   />
                 </div>
                 <div className="col-span-2">
-                  <button
+                  <button style={{backgroundColor: 'black'}}
                     type="submit"
                     className="bg-black text-white px-4 py-2 rounded w-full"
                   >
