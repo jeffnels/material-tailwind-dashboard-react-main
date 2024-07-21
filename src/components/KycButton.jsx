@@ -98,7 +98,7 @@ const modalSpring = useSpring({
 
       {isFirstModalOpen && (
          <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.7] z-50">
- <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-75 z-50">
+ <div className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-[0.7] z-50">
           <div className="bg-white flex items-center justify-between rounded-lg shadow-lg p-8 flex-col relative w-full max-w-md h-[300px]">
             <button
               className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
@@ -127,7 +127,7 @@ const modalSpring = useSpring({
        
       )}
       {toastMessage && (
-         <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.7] z-50">
+         <animated.div style={modalSpring} >
  <div className={` z-10 fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>
           <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')} style={{ backgroundColor: toastType === 'error' ? 'red' : 'green', color: 'white' }}>
             {toastMessage}
@@ -137,7 +137,8 @@ const modalSpring = useSpring({
        
       )}
       {isSecondModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-200[0.5] z-50">
+         <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.7] z-50">
+         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.7] z-50">
           <div className="bg-white rounded-md shadow-lg p-6 relative max-w-3xl w-full mx-4 h-[90%]">
             <button
               className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
@@ -513,6 +514,8 @@ const modalSpring = useSpring({
             </div>
           </div>
         </div>
+         </animated.div>
+       
       )}
     </div>
   );
