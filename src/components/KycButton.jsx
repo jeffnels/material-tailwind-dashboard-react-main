@@ -89,7 +89,7 @@ const KycButton = () => {
       </button>
 
       {isFirstModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-[0.5] z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-15 z-50">
           <div className="bg-white flex items-center justify-between rounded-lg shadow-lg p-8 flex-col relative w-full max-w-md h-[300px]">
             <button
               className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
@@ -123,7 +123,7 @@ const KycButton = () => {
         </div>
       )}
       {isSecondModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-[0.5] z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-15 z-50">
           <div className="bg-white rounded-md shadow-lg p-6 relative max-w-3xl w-full mx-4 h-[90%]">
             <button
               className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
