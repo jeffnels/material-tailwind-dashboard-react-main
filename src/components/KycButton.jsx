@@ -81,6 +81,7 @@ console.log('success');
 
   return (
     <div>
+      
       <button
         className="bg-black text-white px-4 py-2 rounded mb-6"
         onClick={() => setIsFirstModalOpen(true)}
@@ -115,7 +116,13 @@ console.log('success');
           </div>
         </div>
       )}
-
+{toastMessage && (
+              <div className={` z-10  fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+                <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')} style={{background : toastType === 'error' ? 'red' : 'green' , color: 'white'}}>
+                  {toastMessage}
+                </Toast>
+              </div>
+            )}
       {isSecondModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
           <div className="bg-white rounded-md shadow-lg p-6 relative max-w-3xl w-full mx-4 h-[90%]">
@@ -127,15 +134,14 @@ console.log('success');
             </button>
             <h2 className="text-xl font-semibold mb-4">Identity Verification</h2>
             {toastMessage && (
-              <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
-                <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')}>
+              <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-black ${toastType === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+                <Toast color={toastType === 'error' ? 'failure' : 'success'} style={{background : toastType === 'error' ? 'red' : 'green' , color: 'white'}} onClose={() => setToastMessage('')}>
                   {toastMessage}
                 </Toast>
               </div>
             )}
             <div className="overflow-y-auto max-h-[75vh]">
-              <form className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-8" onSubmit={handleSubmit}>
-                <div>
+  <form className="space-y-4 p-4 max-w-md mx-auto bg-white rounded-md shadow-md" onSubmit={handleSubmit}>                <div>
                   <label className="text-sm font-medium">First Name</label>
                   <input
                     type="text"
