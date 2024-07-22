@@ -97,8 +97,8 @@ const modalSpring = useSpring({
       </button>
 
       {isFirstModalOpen && (
-         <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.7] z-50">
- <div className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-[0.7] z-50">
+         <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
+ <div className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-[0.2] z-50">
           <div className="bg-white flex items-center justify-between rounded-lg shadow-lg p-8 flex-col relative w-full max-w-md h-[300px]">
             <button
               className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
@@ -137,9 +137,9 @@ const modalSpring = useSpring({
        
       )}
       {isSecondModalOpen && (
-         <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.7] z-50">
-         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.7] z-50">
-          <div className="bg-white rounded-md shadow-lg p-6 relative max-w-3xl w-full mx-4 h-[90%]">
+         <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
+         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
+          <div className="bg-white rounded-md shadow-lg p-6 relative max-w-3xl w-full mx-4 ">
             <button
               className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
               onClick={() => setIsSecondModalOpen(false)}
@@ -154,7 +154,7 @@ const modalSpring = useSpring({
                 </Toast>
               </div>
             )}
-            <div className="overflow-y-auto max-h-[75vh]">
+            <div className="overflow-y-auto max-h-[85vh]">
               <form className="space-y-4 p-4 max-w-md mx-auto bg-white rounded-md shadow-md" onSubmit={handleSubmit}>
                 <div>
                   <label className="text-sm font-medium">First Name</label>

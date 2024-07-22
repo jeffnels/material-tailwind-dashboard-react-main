@@ -195,7 +195,7 @@ export const Plans = () => {
       <section className="py-12 bg-gray-100">
         <div className="container mx-auto px-4">
           <Typography variant="h3" className="text-center font-bold mb-12">
-            Our Pricing Plans
+            Our Pricing 
           </Typography>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
