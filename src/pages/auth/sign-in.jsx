@@ -127,7 +127,7 @@ export function SignIn() {
       </div>
      
     </section>
-     <div className="w-2/5 h-full hidden lg:block relative">
+     <div className="w-[50%] h-full hidden lg:block relative">
   <img
     src="/img/pattern.png"
     className="h-full w-full object-cover"
