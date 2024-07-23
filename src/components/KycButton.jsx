@@ -90,11 +90,12 @@ const modalSpring = useSpring({
   return (
     <div>
       <button
-        className="bg-black text-white px-4 py-2 rounded mb-6"
-        onClick={() => setIsFirstModalOpen(true)}
-      >
-        Verify Identity
-      </button>
+  className="bg-red-500 text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-red-700"
+  onClick={() => setIsFirstModalOpen(true)}
+>
+  Verify Identity
+</button>
+
 
       {isFirstModalOpen && (
          <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">

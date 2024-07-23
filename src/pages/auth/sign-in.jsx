@@ -53,7 +53,8 @@ export function SignIn() {
   };
 
   return (
-    <section className="m-8 flex gap-4">
+    <div  className=" flex items-center justify-between ">
+    <section className="w-full lg:w-3/5 flex flex-col items-center justify-center rounded-3xl ">
       <div className="w-full lg:w-3/5 mt-24">
         <div className="text-center">
           <Typography variant="h2" className="font-bold mb-4">
@@ -124,14 +125,36 @@ export function SignIn() {
           </Typography>
         </form>
       </div>
-      <div className="w-2/5 h-full hidden lg:block">
-        <img
-          src="/img/pattern.png"
-          className="h-full w-full object-cover rounded-3xl"
-          alt="Pattern"
-        />
-      </div>
+     
     </section>
+     <div className="w-2/5 h-full hidden lg:block relative">
+  <img
+    src="/img/pattern.png"
+    className="h-full w-full object-cover"
+    alt="Pattern"
+  />
+  <div className="absolute inset-0 flex items-center justify-center">
+    <div className="text-center text-white bg-black bg-opacity-50 p-4 rounded-md" style={{ animation: "fadeIn 1s ease-in forwards" }}>
+      <h1 className="text-3xl font-bold" style={{ animation: "fadeIn 1s ease-out .0s forwards" }}>Welcome to Tradespharehub</h1>
+      <p className="text-lg mt-2" style={{ animation: "fadeIn 1s ease-in .0s  forwards" }}>Login or Register now</p>
+    </div>
+  </div>
+</div>
+
+<style jsx>{`
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`}</style>
+
+    </div>
   );
 }
 

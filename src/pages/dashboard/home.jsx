@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import NoTransactionComponent from "@/components/NoTransactionComponent";
 import KycButton from "@/components/KycButton";
 import WithdrawalButton from "@/components/WithdrawalButton";
+import DepositButton from "@/components/DepositButton";
 
 export function Home() {
   const [projectsTableData, setProjectsTableData] = useState([]);
@@ -90,7 +91,7 @@ export function Home() {
   return (
     <div className="mt-12">
       <div className="flex gap-4">
-      <KycButton/> <WithdrawalButton/>
+      <KycButton/> <WithdrawalButton/> <DepositButton/>
 
       </div>
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">

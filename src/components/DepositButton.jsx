@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSpring, animated } from '@react-spring/web';
 import { Toast } from 'flowbite-react';
 
-const WithdrawalButton = () => {
+const DepositButton = () => {
   const [isWithdrawalOpen, setIsWithdrawalOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [amount, setAmount] = useState('');
@@ -48,8 +48,8 @@ const WithdrawalButton = () => {
 
   return (
     <div className="relative">
-      <button onClick={() => setIsWithdrawalOpen(true)} className="bg-black text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700 ">
-        Withdraw
+      <button onClick={() => setIsWithdrawalOpen(true)} className="bg-black text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700">
+        Deposit
       </button>
 
       {isWithdrawalOpen && (
@@ -96,4 +96,4 @@ const WithdrawalButton = () => {
   );
 };
 
-export default WithdrawalButton;
+export default DepositButton;
