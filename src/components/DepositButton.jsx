@@ -3,9 +3,11 @@ import { useSpring, animated } from '@react-spring/web';
 import { Toast } from 'flowbite-react';
 
 const DepositButton = () => {
-  const [isWithdrawalOpen, setIsWithdrawalOpen] = useState(false);
+  const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [isCryptoOpen, setIsCryptoOpen] = useState(false);
   const [amount, setAmount] = useState('');
+  const [method, setMethod] = useState('');
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('');
 
@@ -19,9 +21,9 @@ const DepositButton = () => {
     return () => clearTimeout(timer);
   }, [toastMessage]);
 
-  const withdrawalSpring = useSpring({
-    opacity: isWithdrawalOpen ? 1 : 0,
-    transform: isWithdrawalOpen ? 'translateY(0)' : 'translateY(-50%)',
+  const depositSpring = useSpring({
+    opacity: isDepositOpen ? 1 : 0,
+    transform: isDepositOpen ? 'translateY(0)' : 'translateY(-50%)',
     config: { tension: 200, friction: 15 },
   });
 
@@ -31,32 +33,50 @@ const DepositButton = () => {
     config: { tension: 200, friction: 15 },
   });
 
-  const handleWithdrawalSubmit = (e) => {
+  const cryptoSpring = useSpring({
+    opacity: isCryptoOpen ? 1 : 0,
+    transform: isCryptoOpen ? 'translateY(0)' : 'translateY(-50%)',
+    config: { tension: 200, friction: 15 },
+  });
+
+  const handleDepositSubmit = (e) => {
     e.preventDefault();
 
-    if (!amount) {
-      setToastMessage('Please input an amount');
+    if (!amount || !method) {
+      setToastMessage('Please input an amount and select a method');
       setToastType('error');
       return;
     }
 
-    setIsWithdrawalOpen(false);
-    setIsConfirmationOpen(true);
-    setToastMessage('Withdrawal request submitted');
+    setIsDepositOpen(false);
+
+    if (method === 'Crypto') {
+      setIsCryptoOpen(true);
+    } else {
+      setIsConfirmationOpen(true);
+    }
+
+    setToastMessage('Deposit request submitted');
+    setToastType('success');
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setToastMessage('Address copied to clipboard');
     setToastType('success');
   };
 
   return (
     <div className="relative">
-      <button onClick={() => setIsWithdrawalOpen(true)} className="bg-black text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700">
+      <button onClick={() => setIsDepositOpen(true)} className="bg-black text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700">
         Deposit
       </button>
 
-      {isWithdrawalOpen && (
+      {isDepositOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <animated.div style={withdrawalSpring} className="modal bg-white p-6 rounded-lg shadow-lg">
+          <animated.div style={depositSpring} className="modal bg-white p-6 rounded-lg shadow-lg">
             <div className="modal-content">
-              <h2 className="text-2xl mb-4">Withdraw Funds</h2>
+              <h2 className="text-2xl mb-4">Deposit Funds</h2>
               <input
                 type="number"
                 value={amount}
@@ -64,9 +84,19 @@ const DepositButton = () => {
                 placeholder="Enter amount"
                 className="input mb-4 p-2 border rounded"
               />
+              <select
+                value={method}
+                onChange={(e) => setMethod(e.target.value)}
+                className="input mb-4 p-2 border rounded"
+              >
+                <option value="">Select Method</option>
+                <option value="Bank Deposit">Bank Deposit</option>
+                <option value="CashApp">CashApp</option>
+                <option value="Crypto">Crypto</option>
+              </select>
               <div className="flex space-x-4">
-                <button onClick={handleWithdrawalSubmit} className="btn-primary">Submit</button>
-                <button onClick={() => setIsWithdrawalOpen(false)} className="btn-secondary">Close</button>
+                <button onClick={handleDepositSubmit} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">Submit</button>
+                <button onClick={() => setIsDepositOpen(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 transition duration-300">Close</button>
               </div>
             </div>
           </animated.div>
@@ -78,8 +108,24 @@ const DepositButton = () => {
           <animated.div style={confirmationSpring} className="modal bg-white p-6 rounded-lg shadow-lg">
             <div className="modal-content">
               <h2 className="text-2xl mb-4">Confirmation</h2>
-              <p>{amount} is processing for withdrawal</p>
-              <button onClick={() => setIsConfirmationOpen(false)} className="btn-secondary mt-4">Close</button>
+              <p>Transfer details have been sent to your email</p>
+              <button onClick={() => setIsConfirmationOpen(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 transition duration-300 mt-4">Close</button>
+            </div>
+          </animated.div>
+        </div>
+      )}
+
+      {isCryptoOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <animated.div style={cryptoSpring} className="modal bg-white p-6 rounded-lg shadow-lg">
+            <div className="modal-content">
+              <h2 className="text-2xl mb-4">Crypto Addresses</h2>
+              <div className="mb-4">
+                <p>Bitcoin: <span className="text-blue-500 cursor-pointer" onClick={() => copyToClipboard('bitcoin-address')}>bitcoin-address</span></p>
+                <p>Ethereum: <span className="text-blue-500 cursor-pointer" onClick={() => copyToClipboard('ethereum-address')}>ethereum-address</span></p>
+                <p>Litecoin: <span className="text-blue-500 cursor-pointer" onClick={() => copyToClipboard('litecoin-address')}>litecoin-address</span></p>
+              </div>
+              <button onClick={() => setIsCryptoOpen(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 transition duration-300 mt-4">Close</button>
             </div>
           </animated.div>
         </div>

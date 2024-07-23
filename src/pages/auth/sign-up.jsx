@@ -98,11 +98,12 @@ export function SignUp() {
   return (
 
     <div className=" flex items-center justify-between ">
-          <div className="w-[50%] h-full hidden lg:block relative">
+          <div className="w-[40%] h-full hidden lg:block relative">
   <img
     src="/img/pattern.png"
-    className="h-full w-full object-cover"
+    className="h-full w-full object-cover "
     alt="Pattern"
+    
   />
   <div className="absolute inset-0 flex items-center justify-center">
     <div className="text-center text-white bg-black bg-opacity-50 p-4 rounded-md" style={{ animation: "fadeIn 1s ease-in forwards" }}>
