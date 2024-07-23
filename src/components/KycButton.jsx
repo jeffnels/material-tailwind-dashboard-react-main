@@ -127,16 +127,7 @@ const modalSpring = useSpring({
          </animated.div>
        
       )}
-      {toastMessage && (
-         <animated.div style={modalSpring} >
- <div className={` z-10 fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>
-          <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')} style={{ backgroundColor: toastType === 'error' ? 'red' : 'green', color: 'white' }}>
-            {toastMessage}
-          </Toast>
-        </div>
-         </animated.div>
-       
-      )}
+    
       {isSecondModalOpen && (
          <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
