@@ -97,7 +97,7 @@ export function SignUp() {
 
   return (
 
-    <div className=" flex items-center justify-between ">
+    <div className=" flex items-center justify-center ">
           <div className="w-[40%] h-full hidden lg:block relative">
   <img
     src="/img/pattern.png"

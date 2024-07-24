@@ -129,6 +129,7 @@ const modalSpring = useSpring({
       )}
     
       {isSecondModalOpen && (
+        
          <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
           <div className="bg-white rounded-md shadow-lg p-6 relative max-w-3xl w-full mx-4 ">
