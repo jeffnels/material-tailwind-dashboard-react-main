@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardBody,
@@ -30,6 +30,22 @@ export function Profile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Check if any field is empty
+    const { currentPassword, newPassword, newPasswordConfirmation } = profileInfo;
+    if (!currentPassword || !newPassword || !newPasswordConfirmation) {
+      setToastMessage("Please fill all input fields");
+      setToastType("error");
+      return;
+    }
+
+    // Check if new passwords match
+    if (newPassword !== newPasswordConfirmation) {
+      setToastMessage("New passwords do not match");
+      setToastType("error");
+      return;
+    }
+
     // Placeholder for form submission logic
     setToastMessage("Profile updated successfully"); // Example success message
     setToastType("success");
@@ -42,6 +58,16 @@ export function Profile() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    let timer;
+    if (toastMessage) {
+      timer = setTimeout(() => {
+        setToastMessage("");
+      }, 3000); // 3 seconds timeout
+    }
+    return () => clearTimeout(timer);
+  }, [toastMessage]);
 
   return (
     <>
@@ -142,15 +168,29 @@ export function Profile() {
             Save
           </Button>
         </DialogFooter>
-      </Dialog>
-
-      {toastMessage && (
-        <div className="z-10 fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white">
-          <Toast color={toastType === "error" ? "failure" : "success"} onClose={() => setToastMessage("")}>
+           {toastMessage && (
+        <div
+          className="fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white"
+          style={{
+           
+            backgroundColor: toastType === "error" ? "red" : "green",
+          }}
+        >
+          <Toast
+            color={toastType === "error" ? "failure" : "success"}
+            onClose={() => setToastMessage("")}
+            style={{
+              backgroundColor: toastType === "error" ? "red" : "green",
+              color: "white",
+            }}
+          >
             {toastMessage}
           </Toast>
         </div>
       )}
+      </Dialog>
+
+   
     </>
   );
 }
