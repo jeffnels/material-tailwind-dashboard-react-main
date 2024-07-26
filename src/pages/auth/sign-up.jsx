@@ -97,11 +97,11 @@ export function SignUp() {
 
   return (
 
-    <div className=" flex items-center justify-center ">
+    <div className=" flex  ">
           <div className="w-[40%] h-full hidden lg:block relative">
   <img
     src="/img/pattern.png"
-    className="h-full w-full object-cover "
+    className="h-full w-full object-cover "   
     alt="Pattern"
     
   />
@@ -130,7 +130,7 @@ export function SignUp() {
 
         <div className="w-full lg:w-3/5 flex flex-col items-center justify-center ">
           <div className="text-center">
-            <Typography variant="h2" className="font-bold mb-4">Join Us Today</Typography>
+            <Typography variant="h2"  className="font-bold mb-4">Join Us Today</Typography>
             <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to register.</Typography>
           </div>
           <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmit}>

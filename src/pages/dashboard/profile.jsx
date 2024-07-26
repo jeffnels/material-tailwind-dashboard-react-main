@@ -1,31 +1,51 @@
+import React, { useState } from "react";
 import {
   Card,
   CardBody,
-  CardHeader,
-  CardFooter,
   Avatar,
   Typography,
-  Tabs,
-  TabsHeader,
-  Tab,
-  Switch,
-  Tooltip,
   Button,
+  Input,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
 } from "@material-tailwind/react";
-import {
-  HomeIcon,
-  ChatBubbleLeftEllipsisIcon,
-  Cog6ToothIcon,
-  PencilIcon,
-} from "@heroicons/react/24/solid";
-import { Link } from "react-router-dom";
-import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
-import { platformSettingsData, conversationsData, projectsData } from "@/data";
+import { Toast } from "flowbite-react";
 
 export function Profile() {
+  const [profileInfo, setProfileInfo] = useState({
+    currentPassword: "",
+    newPassword: "",
+    newPasswordConfirmation: "",
+  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProfileInfo({ ...profileInfo, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Placeholder for form submission logic
+    setToastMessage("Profile updated successfully"); // Example success message
+    setToastType("success");
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
-      <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/background-image.png')] bg-cover	bg-center">
+      <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-cover bg-center">
         <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
       </div>
       <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100">
@@ -51,169 +71,86 @@ export function Profile() {
                 </Typography>
               </div>
             </div>
-            <div className="w-96">
-              <Tabs value="app">
-                <TabsHeader>
-                  <Tab value="app">
-                    <HomeIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                    App
-                  </Tab>
-                  <Tab value="message">
-                    <ChatBubbleLeftEllipsisIcon className="-mt-0.5 mr-2 inline-block h-5 w-5" />
-                    Message
-                  </Tab>
-                  <Tab value="settings">
-                    <Cog6ToothIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
-                    Settings
-                  </Tab>
-                </TabsHeader>
-              </Tabs>
-            </div>
+            <Button color="green" ripple="light" onClick={openModal}>
+              Edit Info
+            </Button>
           </div>
-          <div className="gird-cols-1 mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-3">
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-3">
-                Platform Settings
-              </Typography>
-              <div className="flex flex-col gap-12">
-                {platformSettingsData.map(({ title, options }) => (
-                  <div key={title}>
-                    <Typography className="mb-4 block text-xs font-semibold uppercase text-blue-gray-500">
-                      {title}
-                    </Typography>
-                    <div className="flex flex-col gap-6">
-                      {options.map(({ checked, label }) => (
-                        <Switch
-                          key={label}
-                          id={label}
-                          label={label}
-                          defaultChecked={checked}
-                          labelProps={{
-                            className: "text-sm font-normal text-blue-gray-500",
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <ProfileInfoCard
-              title="Profile Information"
-              description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
-              details={{
-                "first name": "Alec M. Thompson",
-                mobile: "(44) 123 1234 123",
-                email: "alecthompson@mail.com",
-                location: "USA",
-                social: (
-                  <div className="flex items-center gap-4">
-                    <i className="fa-brands fa-facebook text-blue-700" />
-                    <i className="fa-brands fa-twitter text-blue-400" />
-                    <i className="fa-brands fa-instagram text-purple-500" />
-                  </div>
-                ),
-              }}
-              action={
-                <Tooltip content="Edit Profile">
-                  <PencilIcon className="h-4 w-4 cursor-pointer text-blue-gray-500" />
-                </Tooltip>
-              }
-            />
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-3">
-                Platform Settings
-              </Typography>
-              <ul className="flex flex-col gap-6">
-                {conversationsData.map((props) => (
-                  <MessageCard
-                    key={props.name}
-                    {...props}
-                    action={
-                      <Button variant="text" size="sm">
-                        reply
-                      </Button>
-                    }
-                  />
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="px-4 pb-4">
+
+          <div className="mb-10">
             <Typography variant="h6" color="blue-gray" className="mb-2">
-              Projects
+              Profile Information
             </Typography>
-            <Typography
-              variant="small"
-              className="font-normal text-blue-gray-500"
-            >
-              Architects design houses
+            <Typography variant="body2" color="blue-gray" className="mb-4">
+              Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer
+              is no. If two equally difficult paths, choose the one more painful
+              in the short term (pain avoidance is creating an illusion of
+              equality).
             </Typography>
-            <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
-              {projectsData.map(
-                ({ img, title, description, tag, route, members }) => (
-                  <Card key={title} color="transparent" shadow={false}>
-                    <CardHeader
-                      floated={false}
-                      color="gray"
-                      className="mx-0 mt-0 mb-4 h-64 xl:h-40"
-                    >
-                      <img
-                        src={img}
-                        alt={title}
-                        className="h-full w-full object-cover"
-                      />
-                    </CardHeader>
-                    <CardBody className="py-0 px-1">
-                      <Typography
-                        variant="small"
-                        className="font-normal text-blue-gray-500"
-                      >
-                        {tag}
-                      </Typography>
-                      <Typography
-                        variant="h5"
-                        color="blue-gray"
-                        className="mt-1 mb-2"
-                      >
-                        {title}
-                      </Typography>
-                      <Typography
-                        variant="small"
-                        className="font-normal text-blue-gray-500"
-                      >
-                        {description}
-                      </Typography>
-                    </CardBody>
-                    <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
-                      <Link to={route}>
-                        <Button variant="outlined" size="sm">
-                          view project
-                        </Button>
-                      </Link>
-                      <div>
-                        {members.map(({ img, name }, key) => (
-                          <Tooltip key={name} content={name}>
-                            <Avatar
-                              src={img}
-                              alt={name}
-                              size="xs"
-                              variant="circular"
-                              className={`cursor-pointer border-2 border-white ${
-                                key === 0 ? "" : "-ml-2.5"
-                              }`}
-                            />
-                          </Tooltip>
-                        ))}
-                      </div>
-                    </CardFooter>
-                  </Card>
-                )
-              )}
+            <div className="space-y-2">
+              <Typography variant="body2" color="blue-gray">
+                <strong>First Name: </strong>Alec M. Thompson
+              </Typography>
+              <Typography variant="body2" color="blue-gray">
+                <strong>Mobile: </strong>(44) 123 1234 123
+              </Typography>
+              <Typography variant="body2" color="blue-gray">
+                <strong>Email: </strong>alecthompson@mail.com
+              </Typography>
+              <Typography variant="body2" color="blue-gray">
+                <strong>Location: </strong>USA
+              </Typography>
             </div>
           </div>
         </CardBody>
       </Card>
+
+      <Dialog open={isModalOpen} handler={closeModal}>
+        <DialogHeader>Update Profile Information</DialogHeader>
+        <DialogBody divider>
+          <form className="flex flex-col gap-4 p-8" onSubmit={handleSubmit}>
+            <Input
+              label="Current Password"
+              name="currentPassword"
+              type="password"
+              value={profileInfo.currentPassword}
+              onChange={handleChange}
+              className="focus:outline-none focus:ring-0"
+            />
+            <Input
+              label="New Password"
+              name="newPassword"
+              type="password"
+              value={profileInfo.newPassword}
+              onChange={handleChange}
+              className="focus:outline-none focus:ring-0"
+            />
+            <Input
+              label="Confirm New Password"
+              name="newPasswordConfirmation"
+              type="password"
+              value={profileInfo.newPasswordConfirmation}
+              onChange={handleChange}
+              className="focus:outline-none focus:ring-0"
+            />
+          </form>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="red" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button variant="gradient" color="green" onClick={handleSubmit}>
+            Save
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {toastMessage && (
+        <div className="z-10 fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white">
+          <Toast color={toastType === "error" ? "failure" : "success"} onClose={() => setToastMessage("")}>
+            {toastMessage}
+          </Toast>
+        </div>
+      )}
     </>
   );
 }

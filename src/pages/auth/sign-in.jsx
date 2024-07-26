@@ -53,7 +53,7 @@ export function SignIn() {
   };
 
   return (
-    <div  className=" flex items-center justify-center ">
+    <div  className=" flex  ">
     <section className="w-full lg:w-3/5 flex flex-col items-center justify-center rounded-3xl ">
       <div className="w-full lg:w-3/5 mt-24">
         <div className="text-center">
