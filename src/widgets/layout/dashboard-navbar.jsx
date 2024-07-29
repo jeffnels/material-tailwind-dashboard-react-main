@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import {
   Navbar,
@@ -31,6 +32,15 @@ export function DashboardNavbar() {
   const { fixedNavbar, openSidenav } = controller;
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUserName(`${user.firstname} ${user.lastname}`);
+    }
+  }, []);
 
   return (
     <Navbar
@@ -83,14 +93,14 @@ export function DashboardNavbar() {
           >
             <Bars3Icon strokeWidth={3} className="h-6 w-6 text-blue-gray-500" />
           </IconButton>
-          <Link to="/auth/sign-in">
+          <Link to="/dashboard/profile">
             <Button
               variant="text"
               color="blue-gray"
               className="hidden items-center gap-1 px-4 xl:flex normal-case"
             >
               <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
-             Jeffrey Nelson
+              {userName || "User Name"}
             </Button>
             <IconButton
               variant="text"
