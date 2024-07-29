@@ -95,7 +95,7 @@ export function Profile() {
           <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
             <div className="flex items-center gap-6">
               <Avatar
-                src={user.avatar || "/img/default-avatar.png"}
+                // src={user.avatar || "/img/default-avatar.png"}
                 alt={user.firstname}
                 size="xl"
                 variant="rounded"
@@ -113,7 +113,7 @@ export function Profile() {
                 </Typography>
               </div>
             </div>
-            <Button color="green" ripple="light" onClick={openModal} className="transition-transform duration-300 transform hover:scale-105">
+            <Button color="green" onClick={openModal} className="transition-transform duration-300 transform hover:scale-105">
               Edit Info
             </Button>
           </div>
@@ -132,10 +132,10 @@ export function Profile() {
                 { label: 'Role', value: user.role },
               ].map((info, index) => (
                 <Card key={index} className="p-4 mb-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <Typography variant="body2" color="blue-gray" className="font-semibold">
+                  <Typography variant="h2" color="blue-gray" className="font-semibold">
                     <strong>{info.label}: </strong>
                   </Typography>
-                  <Typography variant="body2" color="blue-gray">
+                  <Typography variant="h2" color="blue-gray">
                     {info.value}
                   </Typography>
                 </Card>
