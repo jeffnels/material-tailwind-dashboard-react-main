@@ -151,6 +151,30 @@ export function Profile() {
           <animated.div style={modalAnimation}>
             <form className="flex flex-col gap-4 p-8" onSubmit={handleSubmit}>
               <Input
+                label="Firstname"
+                name="firstname"
+                type="text"
+                value={profileInfo.firstname}
+                onChange={handleChange}
+                className="focus:outline-none focus:ring-0"
+              />
+              <Input
+                label="Lastname"
+                name="lastname"
+                type="text"
+                value={profileInfo.lastname}
+                onChange={handleChange}
+                className="focus:outline-none focus:ring-0"
+              />
+              <Input
+                label="Email"
+                name="email"
+                type="email"
+                value={profileInfo.email}
+                onChange={handleChange}
+                className="focus:outline-none focus:ring-0"
+              />
+              <Input
                 label="Current Password"
                 name="currentPassword"
                 type="password"
