@@ -111,7 +111,7 @@ export function Home() {
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         <StatisticsCard
           key="amount"
-          color="blue"
+         
           title="Balance"
           value={amount}
           icon={React.createElement(ArrowUpIcon, {
@@ -124,10 +124,10 @@ export function Home() {
           }
         />
         <StatisticsCard
-          key="amount"
-          color="blue"
-          title="Balance"
-          value={amount}
+          key="bonus"
+        
+          title="Bonus"
+          value={amount * 0.02}
           icon={React.createElement(ArrowUpIcon, {
             className: "w-6 h-6 text-white",
           })}
@@ -139,9 +139,23 @@ export function Home() {
         />
         <StatisticsCard
           key="amount"
-          color="blue"
-          title="Balance"
-          value={amount}
+       
+          title="Profits"
+          value={amount * 0.09}
+          icon={React.createElement(ArrowUpIcon, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className="text-green-500">Up</strong> since last month
+            </Typography>
+          }
+        />
+        <StatisticsCard
+          key="amount"
+       
+          title="Invested Amount"
+          value={amount * 10}
           icon={React.createElement(ArrowUpIcon, {
             className: "w-6 h-6 text-white",
           })}
