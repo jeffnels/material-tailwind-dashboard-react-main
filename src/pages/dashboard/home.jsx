@@ -35,9 +35,24 @@ export function Home() {
   const [authenticated, setAuthenticated] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [isVerified, setIsVerified] = useState(0);
   const navigate = useNavigate();
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
+    // Fetch user amount from localStorage
+    const userDetails = JSON.parse(localStorage.getItem("user"));
+    if (userDetails) {
+      console.log("User details from localStorage:", userDetails);
+      if (userDetails.amount) {
+        setAmount(userDetails.amount);
+        console.log("User amount:", userDetails.amount);
+      }
+      setIsVerified(userDetails.isVerified);
+    } else {
+      console.warn("No user details found in localStorage");
+    }
+
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -89,12 +104,54 @@ export function Home() {
   return (
     <div className="mt-12">
       <div className="flex gap-4">
-        <KycButton />
+        {isVerified === 0 && <KycButton />}
         <WithdrawalButton />
         <DepositButton />
       </div>
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
+        <StatisticsCard
+          key="amount"
+          color="blue"
+          title="Balance"
+          value={amount}
+          icon={React.createElement(ArrowUpIcon, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className="text-green-500">Up</strong> since last month
+            </Typography>
+          }
+        />
+        <StatisticsCard
+          key="amount"
+          color="blue"
+          title="Balance"
+          value={amount}
+          icon={React.createElement(ArrowUpIcon, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className="text-green-500">Up</strong> since last month
+            </Typography>
+          }
+        />
+        <StatisticsCard
+          key="amount"
+          color="blue"
+          title="Balance"
+          value={amount}
+          icon={React.createElement(ArrowUpIcon, {
+            className: "w-6 h-6 text-white",
+          })}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong className="text-green-500">Up</strong> since last month
+            </Typography>
+          }
+        />
+        {/* {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
           <StatisticsCard
             key={title}
             {...rest}
@@ -109,7 +166,7 @@ export function Home() {
               </Typography>
             }
           />
-        ))}
+        ))} */}
       </div>
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
         <Card className="overflow-hidden col-span-3 border border-blue-gray-100 shadow-sm">
@@ -134,11 +191,7 @@ export function Home() {
                   />
                 </IconButton>
               </MenuHandler>
-              <MenuList>
-                <MenuItem>Action</MenuItem>
-                <MenuItem>Another Action</MenuItem>
-                <MenuItem>Something else here</MenuItem>
-              </MenuList>
+              {/* Add MenuList and MenuItem components if needed */}
             </Menu>
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">

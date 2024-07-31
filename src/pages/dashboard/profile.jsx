@@ -127,15 +127,15 @@ export function Profile() {
                 { label: 'First Name', value: user.firstname },
                 { label: 'Last Name', value: user.lastname },
                 { label: 'Email', value: user.email },
-                { label: 'Password', value: '••••••••' }, 
+                // { label: 'Password', value: '••••••••' }, 
                 { label: 'Status', value: user.status },
-                { label: 'Role', value: user.role },
+                // { label: 'Role', value: user.role },
               ].map((info, index) => (
                 <Card key={index} className="p-4 mb-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <Typography variant="h2" color="blue-gray" className="font-semibold">
+                  <Typography variant="h6" color="blue-gray" className="font-semibold">
                     <strong>{info.label}: </strong>
                   </Typography>
-                  <Typography variant="h2" color="blue-gray">
+                  <Typography variant="h6" color="blue-gray">
                     {info.value}
                   </Typography>
                 </Card>

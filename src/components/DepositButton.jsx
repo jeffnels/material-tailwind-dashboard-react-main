@@ -115,21 +115,45 @@ const DepositButton = () => {
         </div>
       )}
 
-      {isCryptoOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <animated.div style={cryptoSpring} className="modal bg-white p-6 rounded-lg shadow-lg">
-            <div className="modal-content">
-              <h2 className="text-2xl mb-4">Crypto Addresses</h2>
-              <div className="mb-4">
-                <p>Bitcoin: <span className="text-blue-500 cursor-pointer" onClick={() => copyToClipboard('bitcoin-address')}>bitcoin-address</span></p>
-                <p>Ethereum: <span className="text-blue-500 cursor-pointer" onClick={() => copyToClipboard('ethereum-address')}>ethereum-address</span></p>
-                <p>Litecoin: <span className="text-blue-500 cursor-pointer" onClick={() => copyToClipboard('litecoin-address')}>litecoin-address</span></p>
-              </div>
-              <button onClick={() => setIsCryptoOpen(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 transition duration-300 mt-4">Close</button>
+     {isCryptoOpen && (
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+    <animated.div
+      style={cryptoSpring}
+      className="bg-white p-8 rounded-lg shadow-lg max-w-3xl mx-4 sm:mx-auto"
+    >
+      <div className="modal-content">
+        <h2 className="text-3xl font-bold mb-6 text-gray-900">Crypto Addresses</h2>
+        <div className="space-y-4">
+          {[
+            { label: 'Bitcoin', address: 'bc1qg7les2474fxy7xg2lu4mtpewn9hd9jk35kwjkg' },
+            { label: 'Ethereum', address: '0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7' },
+            { label: 'Litecoin', address: 'ltc1q8cxd7q2wsqjfd94nah0twhrf33w9ktelpynujx' },
+            { label: 'Solana', address: 'EdqhXJfAUjHPW17AZdB3DNTFPhRgrevsA3KveEorRXQ' },
+            { label: 'USDT (ETH)', address: '0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7' },
+            { label: 'USDT (Tron)', address: 'TKCSNZgDWbnVLAndat8b8nPFi8rjLxbvPZ' },
+          ].map(({ label, address }) => (
+            <div key={label} className="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm">
+              <p className="text-gray-800 font-medium">{label}:</p>
+              <span
+                className="text-blue-600 cursor-pointer hover:underline"
+                onClick={() => copyToClipboard(address)}
+              >
+                {address}
+              </span>
             </div>
-          </animated.div>
+          ))}
         </div>
-      )}
+        <button
+          onClick={() => setIsCryptoOpen(false)}
+          className="mt-6 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-300"
+        >
+          Close
+        </button>
+      </div>
+    </animated.div>
+  </div>
+)}
+
 
       {toastMessage && (
         <div className={`z-10 fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>

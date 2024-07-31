@@ -16,25 +16,25 @@ const plans = [
   {
     name: "Standard Portfolio Plan",
     amount: "$1000-$9999",
-    return: "20% daily",
+    return: "15% daily",
     duration: "7 days",
   },
   {
     name: "Premium Portfolio Plan",
     amount: "$10000-$99999",
-    return: "30% daily",
+    return: "20% daily",
     duration: "7 days",
   },
   {
     name: "Elite Portfolio Plan",
     amount: "$100000-$999999",
-    return: "45% daily",
+    return: "25% daily",
     duration: "14 days",
   },
   {
     name: "VIP Portfolio Plan",
     amount: "$1000000-$10000000",
-    return: "55% daily",
+    return: "30% daily",
     duration: "28 days",
   },
 ];

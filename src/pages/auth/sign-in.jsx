@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Button, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import loginImg from '../../images/login-img.jpg';
 
 export function SignIn() {
   const navigate = useNavigate();
@@ -50,9 +51,9 @@ export function SignIn() {
   };
 
   return (
-    <div className="flex">
-      <section className="w-full lg:w-3/5 flex flex-col items-center justify-center rounded-3xl">
-        <div className="w-full lg:w-3/5 mt-24">
+    <div className="flex h-[100vh] ">
+      <section className="w-full lg:w-3/5 flex flex-col items-center justify-center rounded-3xl h-[100vh] ">
+        <div className="w-full lg:w-3/5 mt-24 ">
           <div className="text-center">
             <Typography variant="h2" className="font-bold mb-4">
               Sign In
@@ -123,11 +124,12 @@ export function SignIn() {
           </form>
         </div>
       </section>
-      <div className="w-[40%] h-full hidden lg:block relative">
+      <div className="w-[40%]  h-[100vh] hidden lg:block relative   " style={{ borderRadius: '3rem 0 0 3rem' }}>
         <img
-          src="/img/pattern.png"
+          src={loginImg}
           className="h-full w-full object-cover"
           alt="Pattern"
+          style={{ borderRadius: '3rem 0 0 3rem' }}
         />
         <div className="absolute inset-0 flex items-center justify-center">
           <div
@@ -140,12 +142,10 @@ export function SignIn() {
             >
               Welcome to Tradespharehub
             </h1>
-            <p
-              className="text-lg mt-2"
-              style={{ animation: "fadeIn 1s ease-in .0s forwards" }}
-            >
-              Login or Register now
+            <p className="text-lg mt-2" style={{ animation: "fadeIn 1s ease-in .0s  forwards" }}>
+              <Link to="/auth/sign-in">Login</Link> or <Link to="/auth/sign-up">Register now</Link>
             </p>
+
           </div>
         </div>
       </div>

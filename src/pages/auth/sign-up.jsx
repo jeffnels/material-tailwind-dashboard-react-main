@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import {
-  Input,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+import loginImg from '../../images/login-img.jpg';
+import { Input, Button, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 
 export function SignUp() {
@@ -13,12 +10,13 @@ export function SignUp() {
     lastname: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
 
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [error, setError] = useState(null); // State for error message
-  const [successMessage, setSuccessMessage] = useState(null); // State for success message
-  const navigate = useNavigate()
+  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -31,8 +29,13 @@ export function SignUp() {
     e.preventDefault();
 
     // Input validation
-    if (!formData.email || !formData.firstname || !formData.lastname || !formData.password) {
+    if (!formData.email || !formData.firstname || !formData.lastname || !formData.password || !formData.confirmPassword) {
       setError('All fields are required');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
@@ -72,6 +75,7 @@ export function SignUp() {
         lastname: '',
         email: '',
         password: '',
+        confirmPassword: '',
       });
 
       // Reset states
@@ -87,50 +91,48 @@ export function SignUp() {
   // Clear success message after 5 seconds
   useEffect(() => {
     let timeout;
-    if (successMessage) {
+    if (error) {
       timeout = setTimeout(() => {
-        setSuccessMessage(null);
+        setError('');
       }, 5000);
     }
     return () => clearTimeout(timeout);
-  }, [successMessage]);
+  }, [error]);
 
   return (
+    <div className="flex h-[100vh]">
+      <div className="w-[40%] h-full hidden lg:block relative" style={{ borderRadius: '3rem 0 0 3rem' }}>
+        <img
+          src={loginImg}
+          className="h-full w-full object-cover"
+          alt="Pattern"
+          style={{ borderRadius: '0 3rem  3rem 0' }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white bg-black bg-opacity-50 p-4 rounded-md" style={{ animation: "fadeIn 1s ease-in forwards" }}>
+            <h1 className="text-3xl font-bold" style={{ animation: "fadeIn 1s ease-out .0s forwards" }}>Welcome to Tradespharehub</h1>
+            <p className="text-lg mt-2" style={{ animation: "fadeIn 1s ease-in .0s  forwards" }}> <Link to="/auth/sign-in">Login</Link> or <Link to="/auth/sign-up">Register now</Link> </p>
+          </div>
+        </div>
+      </div>
 
-    <div className=" flex  ">
-          <div className="w-[40%] h-full hidden lg:block relative">
-  <img
-    src="/img/pattern.png"
-    className="h-full w-full object-cover "   
-    alt="Pattern"
-    
-  />
-  <div className="absolute inset-0 flex items-center justify-center">
-    <div className="text-center text-white bg-black bg-opacity-50 p-4 rounded-md" style={{ animation: "fadeIn 1s ease-in forwards" }}>
-      <h1 className="text-3xl font-bold" style={{ animation: "fadeIn 1s ease-out .0s forwards" }}>Welcome to Tradespharehub</h1>
-      <p className="text-lg mt-2" style={{ animation: "fadeIn 1s ease-in .0s  forwards" }}>Login or Register now</p>
-    </div>
-  </div>
-</div>
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
 
-<style jsx>{`
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`}</style>
-
-      <section className="w-full lg:w-3/5 flex flex-col items-center justify-center rounded-3xl ">
-
-        <div className="w-full lg:w-3/5 flex flex-col items-center justify-center ">
+      <section className="w-full lg:w-3/5 flex flex-col items-center justify-center rounded-3xl">
+        <div className="w-full lg:w-3/5 flex flex-col items-center justify-center">
           <div className="text-center">
-            <Typography variant="h2"  className="font-bold mb-4">Join Us Today</Typography>
+            <Typography variant="h2" className="font-bold mb-4">Join Us Today</Typography>
             <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to register.</Typography>
           </div>
           <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSubmit}>
@@ -144,7 +146,7 @@ export function SignUp() {
                 placeholder="name@mail.com"
                 value={formData.email}
                 onChange={handleChange}
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -155,7 +157,7 @@ export function SignUp() {
                 placeholder="First Name"
                 value={formData.firstname}
                 onChange={handleChange}
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -166,7 +168,7 @@ export function SignUp() {
                 placeholder="Last Name"
                 value={formData.lastname}
                 onChange={handleChange}
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -178,7 +180,19 @@ export function SignUp() {
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                className="!border-t-blue-gray-200 focus:!border-t-gray-900"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+              <Input
+                name="confirmPassword"
+                type="password"
+                size="lg"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="!border-t-blue-gray-200 focus:!border-t-gray-900"
                 labelProps={{
                   className: "before:content-none after:content-none",
                 }}
@@ -195,11 +209,7 @@ export function SignUp() {
               </Typography>
             )}
 
-            {successMessage && (
-              <Typography variant="paragraph" className="text-green-500 mt-4">
-                {successMessage}
-              </Typography>
-            )}
+            
 
             <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">
               Already have an account?

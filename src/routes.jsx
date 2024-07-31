@@ -50,19 +50,19 @@ export const routes = [
     ],
   },
   {
-    title: "auth pages",
-    layout: "auth",
+    // title: "auth pages",
+    // layout: "auth",
     pages: [
       {
-        icon: <ServerStackIcon {...icon} />,
-        name: "sign in",
-        path: "/sign-in",
+        // icon: <ServerStackIcon {...icon} />,
+        // name: "sign in",
+        // path: "/sign-in",
         element: <SignIn />,
       },
       {
-        icon: <RectangleStackIcon {...icon} />,
-        name: "sign up",
-        path: "/sign-up",
+        // icon: <RectangleStackIcon {...icon} />,
+        // name: "sign up",
+        // path: "/sign-up",
         element: <SignUp />,
       },
     ],
