@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
+import LogoutButton from "@/components/LogoutButton";
 
 export function Sidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
@@ -92,6 +93,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
           </ul>
         ))}
       </div>
+      <div className="relative bottom-2 flex items-center justify-center mt-36 ">
+<LogoutButton/>
+      </div>
+      
     </aside>
   );
 }

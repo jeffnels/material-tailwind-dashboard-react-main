@@ -13,6 +13,7 @@ import {
 } from "@material-tailwind/react";
 import { Toast } from "flowbite-react";
 import { useSpring, animated } from '@react-spring/web';
+import LogoutButton from "@/components/LogoutButton";
 
 export function Profile() {
   const [user, setUser] = useState(null);
@@ -142,6 +143,7 @@ export function Profile() {
               ))}
             </div>
           </div>
+        <LogoutButton/>
         </CardBody>
       </Card>
 

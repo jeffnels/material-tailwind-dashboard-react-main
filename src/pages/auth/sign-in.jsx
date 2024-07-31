@@ -124,7 +124,7 @@ export function SignIn() {
           </form>
         </div>
       </section>
-      <div className="w-[40%]  h-[100vh] hidden lg:block relative   " style={{ borderRadius: '3rem 0 0 3rem' }}>
+      <div className="w-[50%]  h-[100vh] hidden lg:block relative   " style={{ borderRadius: '3rem 0 0 3rem' }}>
         <img
           src={loginImg}
           className="h-full w-full object-cover"
