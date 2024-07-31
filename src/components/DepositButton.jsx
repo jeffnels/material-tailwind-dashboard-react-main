@@ -116,13 +116,13 @@ const DepositButton = () => {
       )}
 
      {isCryptoOpen && (
-  <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
     <animated.div
       style={cryptoSpring}
-      className="bg-white p-8 rounded-lg shadow-lg max-w-3xl mx-4 sm:mx-auto"
+      className="bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-lg max-w-full sm:max-w-lg lg:max-w-2xl mx-auto overflow-auto"
     >
       <div className="modal-content">
-        <h2 className="text-3xl font-bold mb-6 text-gray-900">Crypto Addresses</h2>
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 sm:mb-6 text-gray-900">Crypto Addresses</h2>
         <div className="space-y-4">
           {[
             { label: 'Bitcoin', address: 'bc1qg7les2474fxy7xg2lu4mtpewn9hd9jk35kwjkg' },
@@ -132,10 +132,10 @@ const DepositButton = () => {
             { label: 'USDT (ETH)', address: '0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7' },
             { label: 'USDT (Tron)', address: 'TKCSNZgDWbnVLAndat8b8nPFi8rjLxbvPZ' },
           ].map(({ label, address }) => (
-            <div key={label} className="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm">
-              <p className="text-gray-800 font-medium">{label}:</p>
+            <div key={label} className="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow-sm max-w-full sm:max-w-lg lg:max-w-2xl mx-auto overflow-auto">
+              <p className="text-gray-800 font-medium text-sm sm:text-base">{label}:</p>
               <span
-                className="text-blue-600 cursor-pointer hover:underline"
+                className="text-blue-600 cursor-pointer text-sm sm:text-base hover:underline"
                 onClick={() => copyToClipboard(address)}
               >
                 {address}
@@ -145,7 +145,7 @@ const DepositButton = () => {
         </div>
         <button
           onClick={() => setIsCryptoOpen(false)}
-          className="mt-6 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-300"
+          className="mt-4 sm:mt-6 bg-gray-800 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-700 transition-colors duration-300"
         >
           Close
         </button>
