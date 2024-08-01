@@ -291,11 +291,11 @@ export function Home() {
                   </table>
                 </div>
                 {/* Pagination Controls */}
-                <div className="flex flex-col items-center mt-4 w-full sm:flex-row sm:justify-between px-5">
+                <div className="flex flex-col items-center mt-4 w-full sm:flex-row sm:justify-between px-5 mb-2">
                   <button
                     onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
-                    className="px-4 py-2 bg-black text-white rounded-md mb-2 sm:mb-0"
+                    className="px-4 py-2 bg-black text-white rounded-md mb-2 sm:mb-0 text-sm"
                   >
                     Previous
                   </button>
@@ -305,7 +305,7 @@ export function Home() {
                   <button
                     onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className="px-4 py-2 bg-black text-white rounded-md"
+                    className="px-4 py-2 bg-black text-white rounded-md text-sm"
                   >
                     Next
                   </button>
