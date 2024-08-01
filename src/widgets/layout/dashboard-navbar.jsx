@@ -31,7 +31,7 @@ export function DashboardNavbar() {
       setUserName(`${user.firstname} ${user.lastname}`);
 
       // Fetch the avatar URL from DiceBear API
-      const avatarSeed = user.email;
+      const avatarSeed = user.firstname;
       const avatar = `https://api.dicebear.com/9.x/pixel-art/svg?seed=${avatarSeed}`;
       setAvatarUrl(avatar);
     }
@@ -89,16 +89,16 @@ export function DashboardNavbar() {
             <Button
               variant="text"
               color="blue-gray"
-              className="hidden items-center gap-1 px-4 xl:flex normal-case"
+              className="hidden items-center gap-1 px-4 xl:flex normal-case text-base"
             >
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
                   alt="User Avatar"
-                  className="h-5 w-5 rounded-full"
+                  className="h-[40px] w-[40px] rounded-full "
                 />
               ) : (
-                <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
+                <UserCircleIcon className="h-5 w-[40px] text-blue-gray-500" />
               )}
               {userName || "User Name"}
             </Button>
