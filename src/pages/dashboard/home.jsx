@@ -112,7 +112,7 @@ export function Home() {
         <DepositButton />
       </div>
       {/* <Money size={32} /> */}
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 lg:grid-cols-4">
         <StatisticsCard
           key="amount"
           title="Balance"
