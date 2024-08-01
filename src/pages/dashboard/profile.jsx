@@ -35,7 +35,11 @@ export function Profile() {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const userData = JSON.parse(storedUser);
+      setUser({
+        ...userData,
+        avatar: `https://api.dicebear.com/9.x/pixel-art/svg?seed=${userData.email}`
+      });
     }
   }, []);
 
@@ -91,12 +95,12 @@ export function Profile() {
       <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-cover bg-center bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500">
         <div className="absolute inset-0 h-full w-full bg-gray-900/50" />
       </div>
-     <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100 shadow-lg transform transition-transform duration-500 hover:scale-105">
+      <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100 shadow-lg transform transition-transform duration-500 hover:scale-105">
         <CardBody className="p-4">
           <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
             <div className="flex items-center gap-6">
               <Avatar
-                // src={user.avatar || "/img/default-avatar.png"}
+                src={user.avatar}
                 alt={user.firstname}
                 size="xl"
                 variant="rounded"
@@ -128,9 +132,7 @@ export function Profile() {
                 { label: 'First Name', value: user.firstname },
                 { label: 'Last Name', value: user.lastname },
                 { label: 'Email', value: user.email },
-                // { label: 'Password', value: '••••••••' }, 
                 { label: 'Status', value: user.status },
-                // { label: 'Role', value: user.role },
               ].map((info, index) => (
                 <Card key={index} className="p-4 mb-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                   <Typography variant="h6" color="blue-gray" className="font-semibold">
@@ -143,7 +145,7 @@ export function Profile() {
               ))}
             </div>
           </div>
-        <LogoutButton/>
+          <LogoutButton/>
         </CardBody>
       </Card>
 
