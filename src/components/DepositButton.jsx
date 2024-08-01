@@ -68,7 +68,7 @@ const DepositButton = () => {
 
   return (
     <div className="relative">
-      <button onClick={() => setIsDepositOpen(true)} className="bg-black text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700">
+      <button onClick={() => setIsDepositOpen(true)} className="bg-black text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700 min-w-[150px] text-sm">
         Deposit
       </button>
 

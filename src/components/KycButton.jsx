@@ -90,7 +90,7 @@ const modalSpring = useSpring({
   return (
     <div>
       <button
-  className="bg-red-500 text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-red-700"
+  className="bg-red-500 text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-red-700 text-sm min-w-[150px]"
   onClick={() => setIsFirstModalOpen(true)}
 >
   Verify Identity

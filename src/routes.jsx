@@ -41,12 +41,12 @@ export const routes = [
         path: "/plans",
         element: <Plans />,
       },
-      {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "notifications",
-        path: "/notifications",
-        element: <Notifications />,
-      },
+      // {
+      //   icon: <InformationCircleIcon {...icon} />,
+      //   name: "notifications",
+      //   path: "/notifications",
+      //   element: <Notifications />,
+      // },
     ],
   },
   {

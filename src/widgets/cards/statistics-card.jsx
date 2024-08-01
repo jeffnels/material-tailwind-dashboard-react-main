@@ -24,7 +24,7 @@ export function StatisticsCard({ color, icon, title, value, footer }) {
           {title}
         </Typography>
         <Typography variant="h4" color="blue-gray">
-          {value}
+          ${value}
         </Typography>
       </CardBody>
       {footer && (
