@@ -24,10 +24,12 @@ export function Sidenav({ brandImg, brandName, routes }) {
       className={`${sidenavTypes[sidenavType]} ${openSidenav ? "translate-x-0" : "-translate-x-80"
         } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100 flex flex-col gap-y-4 px-4 justify-between`}
     >
-      <div className="relative">
+     
+      <div> 
+        <div className="relative">
         <Link to="/dashboard/home" className="py-6 px-8 text-center">
           <Typography
-            variant="h6"
+            variant="h4"
             color={sidenavType === "dark" ? "white" : "blue-gray"}
           >
             Tradesphere<span className="text-yellow-800">hub</span>
@@ -44,7 +46,6 @@ export function Sidenav({ brandImg, brandName, routes }) {
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700" />
         </IconButton>
       </div>
-      <div>
         {routes.map(({ layout, title, pages }, key) => (
           <ul key={key} className="mb-4 flex flex-col gap-1">
             {title && (
