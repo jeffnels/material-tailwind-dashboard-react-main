@@ -12,12 +12,13 @@ import {
 } from "@material-tailwind/react";
 import {
   EllipsisVerticalIcon,
-  ArrowUpIcon,
   CheckCircleIcon,
   ClockIcon,
+  ArrowUpIcon,
 } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
+
 import {
   statisticsCardsData,
   statisticsChartsData,
@@ -28,6 +29,8 @@ import NoTransactionComponent from "@/components/NoTransactionComponent";
 import KycButton from "@/components/KycButton";
 import WithdrawalButton from "@/components/WithdrawalButton";
 import DepositButton from "@/components/DepositButton";
+import { CreditCard, Money, StackPlus, TreasureChest } from "@phosphor-icons/react";
+import { Coins } from "@phosphor-icons/react/dist/ssr";
 
 export function Home() {
   const [projectsTableData, setProjectsTableData] = useState([]);
@@ -108,13 +111,14 @@ export function Home() {
         <WithdrawalButton />
         <DepositButton />
       </div>
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+      {/* <Money size={32} /> */}
+      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 lg:grid-cols-4">
         <StatisticsCard
           key="amount"
-         
           title="Balance"
           value={amount}
-          icon={React.createElement(ArrowUpIcon, {
+        
+          icon={React.createElement(Money, {
             className: "w-6 h-6 text-white",
           })}
           footer={
@@ -123,12 +127,12 @@ export function Home() {
             </Typography>
           }
         />
+
         <StatisticsCard
           key="bonus"
-        
           title="Bonus"
           value={amount * 0.02}
-          icon={React.createElement(ArrowUpIcon, {
+          icon={React.createElement(Coins, {
             className: "w-6 h-6 text-white",
           })}
           footer={
@@ -137,12 +141,13 @@ export function Home() {
             </Typography>
           }
         />
+
         <StatisticsCard
           key="amount"
        
           title="Profits"
           value={amount * 0.09}
-          icon={React.createElement(ArrowUpIcon, {
+          icon={React.createElement(StackPlus, {
             className: "w-6 h-6 text-white",
           })}
           footer={
@@ -153,10 +158,9 @@ export function Home() {
         />
         <StatisticsCard
           key="amount"
-       
           title="Invested Amount"
           value={amount * 10}
-          icon={React.createElement(ArrowUpIcon, {
+          icon={React.createElement(CreditCard, {
             className: "w-6 h-6 text-white",
           })}
           footer={
@@ -191,11 +195,11 @@ export function Home() {
             className="m-0 flex items-center justify-between p-6"
           >
             <div>
-              <Typography variant="h6" color="blue-gray" className="mb-1">
+              <Typography variant="h6" color="blue-gray" className="text-base">
                 Transactions
               </Typography>
             </div>
-            <Menu placement="left-start">
+            {/* <Menu placement="left-start">
               <MenuHandler>
                 <IconButton size="sm" variant="text" color="blue-gray">
                   <EllipsisVerticalIcon
@@ -205,8 +209,8 @@ export function Home() {
                   />
                 </IconButton>
               </MenuHandler>
-              {/* Add MenuList and MenuItem components if needed */}
-            </Menu>
+
+            </Menu> */}
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
             {loading ? (
@@ -244,11 +248,15 @@ export function Home() {
                           </td>
                         </tr>
                       ) : (
-                        currentItems.map(({ id, amount, type, package_type, created_at, status }) => (
-                          <tr key={id}>
-                            <td className="py-3 px-5 border-b border-blue-gray-50">
+                        currentItems.map(({ 
+                          transactionsId
+                          , amount, type, package_type, created_at, status }) => (
+                          <tr key={
+                            transactionsId
+                            }>
+                            <td className="py-3 px-5 border-b border-blue-gray-50 whitespace-nowrap">
                               <Typography variant="small" color="blue-gray">
-                                {id}
+                                {transactionsId}
                               </Typography>
                             </td>
                             <td className="py-3 px-5 border-b border-blue-gray-50">
@@ -283,11 +291,11 @@ export function Home() {
                   </table>
                 </div>
                 {/* Pagination Controls */}
-                <div className="flex flex-col items-center mt-4 w-full sm:flex-row sm:justify-between lg:p-2">
+                <div className="flex flex-col items-center mt-4 w-full sm:flex-row sm:justify-between px-5 mb-2">
                   <button
                     onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
-                    className="px-4 py-2 bg-black text-white rounded-md mb-2 sm:mb-0"
+                    className="px-4 py-2 bg-black text-white rounded-md mb-2 sm:mb-0 text-sm"
                   >
                     Previous
                   </button>
@@ -297,7 +305,7 @@ export function Home() {
                   <button
                     onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className="px-4 py-2 bg-black text-white rounded-md"
+                    className="px-4 py-2 bg-black text-white rounded-md text-sm"
                   >
                     Next
                   </button>
