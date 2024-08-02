@@ -51,8 +51,35 @@ export function SignIn() {
   };
 
   return (
-    <div className="flex h-[100vh] ">
-      <section className="w-full lg:w-3/5 flex flex-col items-center justify-center rounded-3xl h-[100vh] ">
+  <div className="flex h-[110vh]">
+      <div className="w-[50%] h-full hidden lg:block relative">
+        <img
+          src={loginImg}
+          className="h-full w-full object-cover"
+          alt="Pattern"
+          
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white bg-black bg-opacity-50 p-4  h-full w-full flex items-center justify-center" style={{ animation: "fadeIn 1s ease-in forwards" }}>
+            <h1 className="text-[2rem] font-[900]" style={{ animation: "fadeIn 1s ease-out .0s forwards" }}>Welcome to Tradesphere<span className="text-yellow-800">hub</span></h1>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+      
+      <section className="w-[50%] lg:w-3/5 flex flex-col items-center justify-center rounded-3xl h-[100vh] ">
         <div className="w-full lg:w-3/5 mt-24 ">
           <div className="text-center">
             <Typography variant="h2" className="font-bold mb-4">
@@ -67,7 +94,7 @@ export function SignIn() {
             </Typography>
           </div>
           <form
-            className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2"
+            className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-full"
             onSubmit={handleSignIn}
           >
             <div className="mb-1 flex flex-col gap-6">
@@ -124,44 +151,7 @@ export function SignIn() {
           </form>
         </div>
       </section>
-      <div className="w-[50%]  h-[100vh] hidden lg:block relative   " style={{ borderRadius: '3rem 0 0 3rem' }}>
-        <img
-          src={loginImg}
-          className="h-full w-full object-cover"
-          alt="Pattern"
-          style={{ borderRadius: '3rem 0 0 3rem' }}
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div
-            className="text-center text-white bg-black bg-opacity-50 p-4 rounded-md"
-            style={{ animation: "fadeIn 1s ease-in forwards" }}
-          >
-            <h1
-              className="text-3xl font-bold"
-              style={{ animation: "fadeIn 1s ease-out .0s forwards" }}
-            >
-              Welcome to Tradespharehub
-            </h1>
-            <p className="text-lg mt-2" style={{ animation: "fadeIn 1s ease-in .0s  forwards" }}>
-              <Link to="/auth/sign-in">Login</Link> or <Link to="/auth/sign-up">Register now</Link>
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
+     
     </div>
   );
 }

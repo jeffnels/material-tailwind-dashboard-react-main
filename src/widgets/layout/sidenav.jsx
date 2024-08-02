@@ -34,7 +34,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
             variant="h6"
             color={sidenavType === "dark" ? "white" : "blue-gray"}
           >
-            {brandName}
+       Tradesphere<span className="text-yellow-800">hub</span>
           </Typography>
         </Link>
         <IconButton
@@ -103,7 +103,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
 
 Sidenav.defaultProps = {
   brandImg: "/img/logo-ct.png",
-  brandName: "Tradespherehub",
+  
 };
 
 Sidenav.propTypes = {
