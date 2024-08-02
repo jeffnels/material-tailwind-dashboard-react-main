@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { useSpring, animated } from '@react-spring/web';
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import Loader from '@/components/Loader';
 import { Toast } from 'flowbite-react';
-
+import DepositModal from '@/components/DepositModal';
+import { XMarkIcon } from "@heroicons/react/24/outline";
 const plans = [
   {
     name: "Basic Portfolio Plan",
@@ -38,7 +38,6 @@ const plans = [
     duration: "28 days",
   },
 ];
-
 const Modal = ({ isOpen, children, onClose, loading }) => {
   const fade = useSpring({
     opacity: isOpen ? 1 : 0,
@@ -53,7 +52,7 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
     >
       <div className="relative bg-white rounded-xl shadow-md max-w-md mx-auto w-[22rem] p-6">
         <div style={{ display: loading ? 'none' : 'block' }}>
-          <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700 absolute right-2 top-2" onClick={onClose} />
+          <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700 absolute right-2 top-2 cursor-pointer" onClick={onClose} />
         </div>
 
         {loading ? (
@@ -66,11 +65,13 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
   );
 };
 
+
 export const Plans = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [amount, setAmount] = useState('');
   const [transactions, setTransactions] = useState([]);
   const [authenticated, setAuthenticated] = useState(true);
@@ -88,6 +89,7 @@ export const Plans = () => {
   const closeModal = () => {
     setIsOpen(false);
     setPaymentModalOpen(false);
+    setDepositModalOpen(false);
   };
 
   const handlePaymentMethodChange = (event) => {
@@ -105,84 +107,97 @@ export const Plans = () => {
     setAmount(event.target.value);
   };
 
-  const handleDone = async () => {
+  const handleDone = () => {
     setLoading(true);
+
+    // Retrieve user data from localStorage
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || isNaN(user.amount)) {
+      setToastMessage('User data not found or invalid.');
+      setToastType('error');
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        setLoading(false);
+      }, 3000);
+      return;
+    }
+
+    const userAmount = parseFloat(user.amount);
+    const minAmount = parseFloat(selectedPlan.amount.split('-')[0].replace('$', '').replace(',', ''));
+    const maxAmount = parseFloat(selectedPlan.amount.split('-')[1].replace('$', '').replace(',', ''));
+    const enteredAmount = parseFloat(amount.replace('$', '').replace(',', ''));
+
+    // Check if user's amount is sufficient
+    if (userAmount < minAmount || !userAmount) {
+      setToastMessage('Insufficient funds.');
+      setToastType('error');
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        setAmount(''); // Clear the amount input
+        setPaymentMethod(''); // Clear the payment method
+        closeModal(); // Close the current modal
+        setDepositModalOpen(true); // Open the deposit modal
+      }, 1000);
+      setLoading(false);
+      return;
+    }
+
+    // Check if entered amount is within the plan range
+    if (enteredAmount < minAmount || enteredAmount > maxAmount) {
+      setToastMessage(`Amount should be between $${minAmount} and $${maxAmount}.`);
+      setToastType('error');
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        setAmount(''); // Clear the amount input
+        setPaymentMethod(''); // Clear the payment method
+      }, 3000);
+      setLoading(false);
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        console.error('No token found in local storage');
-        navigate("/auth/sign-in");
-        setAuthenticated(false);
-        return;
-      }
+      // Simulate a successful transaction creation
+      const transaction = {
+        amount: amount,
+        type: 'credit',
+        package: selectedPlan.name,
+      };
 
-      const response = await fetch('https://tradesphere-backend.onrender.com/api/users/transactions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
-        },
-        body: JSON.stringify({
-          amount: amount,
-          type: 'credit',
-          package: selectedPlan.name,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Created transaction:', data);
+      console.log('Transaction created:', transaction);
       setToastMessage('Your transaction has been successfully created!');
       setToastType('success');
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
+      setTimeout(() => {
+        setShowToast(false);
+        setAmount(''); // Clear the amount input
+        setPaymentMethod(''); // Clear the payment method
+      }, 3000);
       closeModal();
     } catch (error) {
       console.error('Error creating transaction:', error.message);
       setToastMessage(`Error: ${error.message}`);
       setToastType('error');
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
+      setTimeout(() => {
+        setShowToast(false);
+        setAmount(''); // Clear the amount input
+        setPaymentMethod(''); // Clear the payment method
+      }, 3000);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          console.error('No token found in local storage');
-          navigate("/auth/sign-in");
-          setAuthenticated(false);
-          return;
-        }
-
-        const response = await fetch('https://tradesphere-backend.onrender.com/api/users/transactions', {
-          method: 'GET',
-          headers: {
-            'x-auth-token': token,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setTransactions(data);
-        console.log('Fetched transactions:', data);
-      } catch (error) {
-        console.error('Error fetching transactions:', error.message);
-      }
-    };
-
-    fetchTransactions();
-  }, [navigate]);
+    // Simulate fetching transactions
+    const fetchedTransactions = [
+      { id: 1, amount: "$500", type: "credit", package: "Standard Portfolio Plan" },
+    ];
+    setTransactions(fetchedTransactions);
+  }, []);
 
   useEffect(() => {
     if (!authenticated) {
@@ -324,6 +339,8 @@ export const Plans = () => {
           </Button>
         </div>
       </Modal>
+
+      <DepositModal isOpen={depositModalOpen} onClose={closeModal} />
 
       {showToast && (
         <Toast

@@ -25,8 +25,12 @@ const LogoutButton = () => {
         Logout
       </Button>
 
-      <Dialog open={isModalOpen} handler={closeModal} className="max-w-md mx-auto rounded-lg">
-        <DialogHeader className="bg-black text-white">Confirm Logout</DialogHeader>
+      <Dialog 
+        open={isModalOpen} 
+        handler={closeModal} 
+        className="max-w-md mx-auto rounded-lg p-6 bg-white shadow-md"
+      >
+        <DialogHeader className="text-center text-xl font-bold">Confirm Logout</DialogHeader>
         <DialogBody divider className="flex flex-col items-center py-6">
           <p className="text-gray-700 text-center text-lg">Are you sure you want to log out?</p>
         </DialogBody>
