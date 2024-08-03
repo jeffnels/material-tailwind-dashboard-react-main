@@ -14,6 +14,7 @@ import {
 import { Toast } from "flowbite-react";
 import { useSpring, animated } from '@react-spring/web';
 import LogoutButton from "@/components/LogoutButton";
+import Loader from "@/components/Loader";
 
 export function Profile() {
   const [user, setUser] = useState(null);
@@ -87,7 +88,7 @@ export function Profile() {
   }, [toastMessage]);
 
   if (!user) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <Loader/>;
   }
 
   return (
