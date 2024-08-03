@@ -79,8 +79,8 @@ export function SignIn() {
         }
       `}</style>
       
-      <section className="w-[50%] lg:w-3/5 flex flex-col items-center justify-center rounded-3xl h-[100vh] ">
-        <div className="w-full lg:w-3/5 mt-24 ">
+      <section className="w-full lg:w-[50%] flex flex-col items-center justify-center rounded-3xl h-[100vh] ">
+        <div className="w-full lg:w-3/5 mt-24 flex items-center justify-center flex-col">
           <div className="text-center">
             <Typography variant="h2" className="font-bold mb-4">
               Sign In
