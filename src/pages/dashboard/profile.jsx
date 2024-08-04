@@ -5,7 +5,7 @@ import {
   Avatar,
   Typography,
   Button,
-  Input,
+  input,
   Dialog,
   DialogHeader,
   DialogBody,
@@ -88,7 +88,7 @@ export function Profile() {
   }, [toastMessage]);
 
   if (!user) {
-    return <Loader/>;
+    return <Loader />;
   }
 
   return (
@@ -145,63 +145,87 @@ export function Profile() {
               ))}
             </div>
           </div>
-          <LogoutButton/>
+          <LogoutButton />
         </CardBody>
       </Card>
 
       <Dialog open={isModalOpen} handler={closeModal} className="transition-transform transform duration-300">
         <DialogHeader>Update Profile Information</DialogHeader>
-        <DialogBody divider>
+        <DialogBody divider className="max-h-96 overflow-auto">
           <animated.div style={modalAnimation}>
-            <form className="flex flex-col gap-4 p-8" onSubmit={handleSubmit}>
-              <Input
-                label="Firstname"
-                name="firstname"
-                type="text"
-                value={profileInfo.firstname}
-                onChange={handleChange}
-                className="focus:outline-none focus:ring-0"
-              />
-              <Input
-                label="Lastname"
-                name="lastname"
-                type="text"
-                value={profileInfo.lastname}
-                onChange={handleChange}
-                className="focus:outline-none focus:ring-0"
-              />
-              <Input
-                label="Email"
-                name="email"
-                type="email"
-                value={profileInfo.email}
-                onChange={handleChange}
-                className="focus:outline-none focus:ring-0"
-              />
-              <Input
-                label="Current Password"
-                name="currentPassword"
-                type="password"
-                value={profileInfo.currentPassword}
-                onChange={handleChange}
-                className="focus:outline-none focus:ring-0"
-              />
-              <Input
-                label="New Password"
-                name="newPassword"
-                type="password"
-                value={profileInfo.newPassword}
-                onChange={handleChange}
-                className="focus:outline-none focus:ring-0"
-              />
-              <Input
-                label="Confirm New Password"
-                name="newPasswordConfirmation"
-                type="password"
-                value={profileInfo.newPasswordConfirmation}
-                onChange={handleChange}
-                className="focus:outline-none focus:ring-0"
-              />
+            <form className="flex flex-col items-center gap-2 p-4 w-full" onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-2 w-full">
+                <div className="flex flex-col w-full">
+                  <label htmlFor="Firstname">Firstname</label>
+                  <input
+                    placeholder="Firstname"
+                    name="firstname"
+                    type="text"
+                    value={profileInfo.firstname}
+                    onChange={handleChange}
+                    className="focus:outline-none focus:ring-0"
+                  />
+                </div>
+                <div className="flex flex-col w-full">
+                  <label htmlFor="Lastname">Lastname</label>
+                  <input
+                    label="Lastname"
+                    name="lastname"
+                    type="text"
+                    value={profileInfo.lastname}
+                    onChange={handleChange}
+                    className="focus:outline-none focus:ring-0"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 w-full">
+                <div className="flex flex-col w-full">
+                  <label htmlFor="Email">Email</label>
+                  <input
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={profileInfo.email}
+                    onChange={handleChange}
+                    className="focus:outline-none focus:ring-0"
+                  />
+                </div>
+                <hr className="m-4"/>
+                <div className="flex flex-col w-full">
+                  <label htmlFor="Current Password">Current Password</label>
+                  <input
+                    label="Current Password"
+                    name="currentPassword"
+                    type="password"
+                    value={profileInfo.currentPassword}
+                    onChange={handleChange}
+                    className="focus:outline-none focus:ring-0"
+                  />
+                </div>
+                <div className="flex flex-col w-full">
+                  <label htmlFor="New Password">New Password</label>
+                  <input
+                    label="New Password"
+                    name="newPassword"
+                    type="password"
+                    value={profileInfo.newPassword}
+                    onChange={handleChange}
+                    className="focus:outline-none focus:ring-0"
+                  />
+                </div>
+                <div className="flex flex-col w-full">
+                  <label htmlFor="Confirm New Password">Confirm New Password</label>
+                  <input
+                    label="Confirm New Password"
+                    name="newPasswordConfirmation"
+                    type="password"
+                    value={profileInfo.newPasswordConfirmation}
+                    onChange={handleChange}
+                    className="focus:outline-none focus:ring-0"
+                  />
+                </div>
+              </div>
             </form>
           </animated.div>
         </DialogBody>
