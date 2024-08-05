@@ -223,7 +223,7 @@ export function Home() {
                   <table className="w-full min-w-[640px] table-auto">
                     <thead>
                       <tr>
-                        {["Transaction ID", "Amount", "Type", "Package", "Date / Time", "Status"].map((el) => (
+                        {["Transaction ID", "Amount", "Type", "Date / Time", "Status"].map((el) => (
                           <th
                             key={el}
                             className="border-b border-blue-gray-50 py-3 px-6 text-left"
@@ -269,11 +269,7 @@ export function Home() {
                                 {type}
                               </Typography>
                             </td>
-                            <td className="py-3 px-5 border-b border-blue-gray-50">
-                              <Typography variant="small" color="blue-gray">
-                                {package_type}
-                              </Typography>
-                            </td>
+                            
                             <td className="py-3 px-5 border-b border-blue-gray-50">
                               <Typography variant="small" color="blue-gray">
                                 {created_at}
