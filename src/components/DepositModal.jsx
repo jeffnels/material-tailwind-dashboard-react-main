@@ -1,10 +1,9 @@
-// components/DepositModal.js
-
 import React, { useState } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useSpring, animated } from '@react-spring/web';
 import Loader from '@/components/Loader';
+
 
 const Modal = ({ isOpen, children, onClose, loading }) => {
   const fade = useSpring({
@@ -22,12 +21,7 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
         <div style={{ display: loading ? 'none' : 'block' }}>
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700 absolute right-2 top-2" onClick={onClose} />
         </div>
-
-        {loading ? (
-          <Loader />
-        ) : (
-          children
-        )}
+        {loading ? <Loader /> : children}
       </div>
     </animated.div>
   );
@@ -35,34 +29,10 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
 
 const DepositModal = ({ isOpen, onClose }) => {
   const [amount, setAmount] = useState('');
-  const [selectedPackage, setSelectedPackage] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const packages = [
-    'Basic Portfolio Plan',
-    'Standard Portfolio Plan',
-    'Premium Portfolio Plan',
-    'Elite Portfolio Plan',
-    'VIP Portfolio Plan',
-  ];
-
-  const paymentMethods = [
-    'bank',
-    'cashapp',
-    'crypto',
-  ];
 
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
-  };
-
-  const handlePackageChange = (event) => {
-    setSelectedPackage(event.target.value);
-  };
-
-  const handlePaymentMethodChange = (event) => {
-    setPaymentMethod(event.target.value);
   };
 
   const handleSubmit = async () => {
@@ -70,16 +40,16 @@ const DepositModal = ({ isOpen, onClose }) => {
     const transactionData = {
       amount: parseFloat(amount),
       type: 'credit',
-      package: selectedPackage,
-      payment_method: paymentMethod,
+      
     };
 
     try {
-      const response = await fetch('http://tradesphere-backend.onrender.com/api/users/transactions', {
+      const authToken = localStorage.getItem('authToken');
+      const response = await fetch('https://tradesphere-backend.onrender.com/api/users/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjozfSwiaWF0IjoxNzE4NTkwMzEyLCJleHAiOjE3MTg2MjYzMTJ9.GqblDA4JqHCMJT5mRjSUPLqqaEp0YX6OTMdJMsznxY8',
+          'x-auth-token': authToken,
         },
         body: JSON.stringify(transactionData),
       });
@@ -89,6 +59,7 @@ const DepositModal = ({ isOpen, onClose }) => {
       }
 
       const data = await response.json();
+      toast.success('Transaction created successfully!');
       console.log('Transaction created:', data);
     } catch (error) {
       console.error('Error creating transaction:', error);
@@ -114,26 +85,6 @@ const DepositModal = ({ isOpen, onClose }) => {
           placeholder="Enter Amount"
           className="border border-gray-300 rounded-lg p-2"
         />
-        <select
-          value={selectedPackage}
-          onChange={handlePackageChange}
-          className="border border-gray-300 rounded-lg p-2"
-        >
-          <option value="" disabled>Select Package</option>
-          {packages.map((pkg, index) => (
-            <option key={index} value={pkg}>{pkg}</option>
-          ))}
-        </select>
-        <select
-          value={paymentMethod}
-          onChange={handlePaymentMethodChange}
-          className="border border-gray-300 rounded-lg p-2"
-        >
-          <option value="" disabled>Select Payment Method</option>
-          {paymentMethods.map((method, index) => (
-            <option key={index} value={method}>{method}</option>
-          ))}
-        </select>
       </div>
       <div className="flex justify-center mt-4">
         <Button variant="outlined" color="blue" onClick={handleSubmit} disabled={loading}>

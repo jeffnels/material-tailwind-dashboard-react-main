@@ -108,88 +108,104 @@ export const Plans = () => {
   };
 
   const handleDone = () => {
-    setLoading(true);
+  setLoading(true);
 
-    // Retrieve user data from localStorage
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user || isNaN(user.amount)) {
-      setToastMessage('User data not found or invalid.');
-      setToastType('error');
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setLoading(false);
-      }, 3000);
-      return;
-    }
-
-    const userAmount = parseFloat(user.amount);
-    const minAmount = parseFloat(selectedPlan.amount.split('-')[0].replace('$', '').replace(',', ''));
-    const maxAmount = parseFloat(selectedPlan.amount.split('-')[1].replace('$', '').replace(',', ''));
-    const enteredAmount = parseFloat(amount.replace('$', '').replace(',', ''));
-
-    // Check if user's amount is sufficient
-    if (userAmount < minAmount || !userAmount) {
-      setToastMessage('Insufficient funds.');
-      setToastType('error');
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setAmount(''); // Clear the amount input
-        setPaymentMethod(''); // Clear the payment method
-        closeModal(); // Close the current modal
-        setDepositModalOpen(true); // Open the deposit modal
-      }, 1000);
+  // Retrieve user data from localStorage
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user || isNaN(user.amount)) {
+    setToastMessage('User data not found or invalid.');
+    setToastType('error');
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
       setLoading(false);
-      return;
-    }
+    }, 3000);
+    return;
+  }
 
-    // Check if entered amount is within the plan range
-    if (enteredAmount < minAmount || enteredAmount > maxAmount) {
-      setToastMessage(`Amount should be between $${minAmount} and $${maxAmount}.`);
-      setToastType('error');
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setAmount(''); // Clear the amount input
-        setPaymentMethod(''); // Clear the payment method
-      }, 3000);
-      setLoading(false);
-      return;
-    }
+  const userAmount = parseFloat(user.amount);
+  const minAmount = parseFloat(selectedPlan.amount.split('-')[0].replace('$', '').replace(',', ''));
+  const maxAmount = parseFloat(selectedPlan.amount.split('-')[1].replace('$', '').replace(',', ''));
+  const enteredAmount = parseFloat(amount.replace('$', '').replace(',', ''));
 
-    try {
-      // Simulate a successful transaction creation
-      const transaction = {
-        amount: amount,
-        type: 'credit',
-        package: selectedPlan.name,
-      };
+  // Check if user's amount is sufficient for the minimum plan amount
+  if (userAmount < minAmount || !userAmount) {
+    setToastMessage('Insufficient funds.');
+    setToastType('error');
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      setAmount(''); // Clear the amount input
+      setPaymentMethod(''); // Clear the payment method
+      closeModal(); // Close the current modal
+      setDepositModalOpen(true); // Open the deposit modal
+    }, 1000);
+    setLoading(false);
+    return;
+  }
 
-      console.log('Transaction created:', transaction);
-      setToastMessage('Your transaction has been successfully created!');
-      setToastType('success');
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setAmount(''); // Clear the amount input
-        setPaymentMethod(''); // Clear the payment method
-      }, 3000);
-      closeModal();
-    } catch (error) {
-      console.error('Error creating transaction:', error.message);
-      setToastMessage(`Error: ${error.message}`);
-      setToastType('error');
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-        setAmount(''); // Clear the amount input
-        setPaymentMethod(''); // Clear the payment method
-      }, 3000);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Check if entered amount is more than the user's available amount
+  if (enteredAmount > userAmount) {
+    setToastMessage('Insufficient funds.');
+    setToastType('error');
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      setAmount(''); // Clear the amount input
+      setPaymentMethod(''); // Clear the payment method
+      setDepositModalOpen(true); // Open the deposit modal
+    }, 3000);
+    setLoading(false);
+    return;
+  }
+
+  // Check if entered amount is within the plan range
+  if (enteredAmount < minAmount || enteredAmount > maxAmount) {
+    setToastMessage(`Amount should be between $${minAmount} and $${maxAmount}.`);
+    setToastType('error');
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      setAmount(''); // Clear the amount input
+      setPaymentMethod(''); // Clear the payment method
+    }, 3000);
+    setLoading(false);
+    return;
+  }
+
+  try {
+    // Simulate a successful transaction creation
+    const transaction = {
+      amount: amount,
+      type: 'credit',
+      package: selectedPlan.name,
+    };
+
+    console.log('Transaction created:', transaction);
+    setToastMessage('Your transaction has been successfully created!');
+    setToastType('success');
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      setAmount(''); // Clear the amount input
+      setPaymentMethod(''); // Clear the payment method
+    }, 3000);
+    closeModal();
+  } catch (error) {
+    console.error('Error creating transaction:', error.message);
+    setToastMessage(`Error: ${error.message}`);
+    setToastType('error');
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      setAmount(''); // Clear the amount input
+      setPaymentMethod(''); // Clear the payment method
+    }, 3000);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     // Simulate fetching transactions
