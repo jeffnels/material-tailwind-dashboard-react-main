@@ -22,7 +22,7 @@ export function DashboardNavbar() {
   const { pathname } = useLocation();
   const [layout, page] = pathname.split("/").filter((el) => el !== "");
   const [userName, setUserName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [userInitials, setUserInitials] = useState("");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -30,10 +30,9 @@ export function DashboardNavbar() {
       const user = JSON.parse(storedUser);
       setUserName(`${user.firstname} ${user.lastname}`);
 
-      // Fetch the avatar URL from DiceBear API
-      const avatarSeed = user.firstname;
-      const avatar = `https://api.dicebear.com/9.x/pixel-art/svg?seed=${avatarSeed}`;
-      setAvatarUrl(avatar);
+      // Create user initials
+      const initials = `${user.firstname.charAt(0)}${user.lastname.charAt(0)}`.toUpperCase();
+      setUserInitials(initials);
     }
   }, []);
 
@@ -91,12 +90,12 @@ export function DashboardNavbar() {
               color="blue-gray"
               className="hidden items-center gap-1 px-4 xl:flex normal-case text-base"
             >
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt="User Avatar"
-                  className="h-[40px] w-[40px] rounded-full "
-                />
+              {userInitials ? (
+                <div
+                  className="h-10 w-10 flex items-center justify-center rounded-full bg-blue-gray-500 text-white text-lg font-semibold"
+                >
+                  {userInitials}
+                </div>
               ) : (
                 <UserCircleIcon className="h-5 w-[40px] text-blue-gray-500" />
               )}
@@ -107,12 +106,12 @@ export function DashboardNavbar() {
               color="blue-gray"
               className="grid xl:hidden"
             >
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt="User Avatar"
-                  className="h-5 w-5 rounded-full"
-                />
+              {userInitials ? (
+                <div
+                  className="h-8 w-8 flex items-center justify-center rounded-full bg-blue-gray-500 text-white text-sm font-semibold"
+                >
+                  {userInitials}
+                </div>
               ) : (
                 <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
               )}

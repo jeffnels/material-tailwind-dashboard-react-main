@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useSpring, animated } from '@react-spring/web';
 import Loader from '@/components/Loader';
-
+import emailjs from '@emailjs/browser';
 
 const Modal = ({ isOpen, children, onClose, loading }) => {
   const fade = useSpring({
@@ -28,19 +28,26 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
 };
 
 const DepositModal = ({ isOpen, onClose }) => {
+    const form = useRef();
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    setUser(storedUser);
+  }, []);
 
   const handleAmountChange = (event) => {
     setAmount(event.target.value);
   };
 
   const handleSubmit = async () => {
+   
     setLoading(true);
     const transactionData = {
       amount: parseFloat(amount),
       type: 'credit',
-      
     };
 
     try {
@@ -55,11 +62,23 @@ const DepositModal = ({ isOpen, onClose }) => {
       });
 
       if (!response.ok) {
+        
         throw new Error('Network response was not ok');
       }
-
+        emailjs
+      .sendForm('service_prss2hj', 'template_plna47o', form.current, {
+        publicKey: 'zG2MALRSqvC66oZ1yk7tg',
+      })
+      .then(
+        () => {
+          console.log('SUCCESS!');
+        },
+        (error) => {
+          console.log('FAILED...', error.text);
+        },
+      );
       const data = await response.json();
-      toast.success('Transaction created successfully!');
+      
       console.log('Transaction created:', data);
     } catch (error) {
       console.error('Error creating transaction:', error);
@@ -78,12 +97,38 @@ const DepositModal = ({ isOpen, onClose }) => {
         Please provide the details for your deposit.
       </Typography>
       <div className="flex flex-col space-y-4">
+        {user && (
+          <>
+            <input
+              type="text"
+              value={user.firstname}
+              disabled
+              className="border border-gray-300 rounded-lg p-2 bg-gray-100"
+              name="first_name"
+            />
+            <input
+              type="text"
+              value={user.lastname}
+              disabled
+              className="border border-gray-300 rounded-lg p-2 bg-gray-100"
+              name="last_name"
+            />
+            <input
+              type="email"
+              value={user.email}
+              disabled
+              className="border border-gray-300 rounded-lg p-2 bg-gray-100"
+              name="email"
+            />
+          </>
+        )}
         <input
           type="number"
           value={amount}
           onChange={handleAmountChange}
           placeholder="Enter Amount"
           className="border border-gray-300 rounded-lg p-2"
+          name="amount"
         />
       </div>
       <div className="flex justify-center mt-4">
