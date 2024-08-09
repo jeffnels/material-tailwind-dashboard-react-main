@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useSpring, animated } from '@react-spring/web';
 import Loader from '@/components/Loader';
 import emailjs from '@emailjs/browser';
+import { Toast } from 'flowbite-react';
 
 const Modal = ({ isOpen, children, onClose, loading }) => {
   const fade = useSpring({
@@ -28,10 +29,10 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
 };
 
 const DepositModal = ({ isOpen, onClose }) => {
-    const form = useRef();
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [toastMessage, setToastMessage] = useState({ message: '', type: '' });
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -42,9 +43,10 @@ const DepositModal = ({ isOpen, onClose }) => {
     setAmount(event.target.value);
   };
 
-  const handleSubmit = async () => {
-   
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setLoading(true);
+
     const transactionData = {
       amount: parseFloat(amount),
       type: 'credit',
@@ -62,26 +64,30 @@ const DepositModal = ({ isOpen, onClose }) => {
       });
 
       if (!response.ok) {
-        
         throw new Error('Network response was not ok');
       }
-        emailjs
-      .sendForm('service_prss2hj', 'template_plna47o', form.current, {
-        publicKey: 'zG2MALRSqvC66oZ1yk7tg',
-      })
-      .then(
-        () => {
-          console.log('SUCCESS!');
-        },
-        (error) => {
-          console.log('FAILED...', error.text);
-        },
-      );
+
       const data = await response.json();
-      
       console.log('Transaction created:', data);
+
+      const emailParams = {
+        first_name: user.firstname,
+        last_name: user.lastname,
+        email: user.email,
+        amount: amount,
+      };
+
+      try {
+        await emailjs.send('service_a22wsja', 'template_plna47o', emailParams, 'XZlvx_sjG-iimKEdS');
+        console.log('Email sent successfully!');
+      } catch (emailError) {
+        console.error('Email sending failed...', emailError);
+      }
+
+      setToastMessage({ message: 'Transaction successful!', type: 'success' });
     } catch (error) {
-      console.error('Error creating transaction:', error);
+      console.error('Error creating transaction or sending email:', error);
+      setToastMessage({ message: 'Error creating transaction!', type: 'error' });
     } finally {
       setLoading(false);
       onClose();
@@ -89,54 +95,68 @@ const DepositModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} loading={loading}>
-      <Typography variant="h4" className="text-center font-bold mb-4">
-        Deposit Funds
-      </Typography>
-      <Typography variant="paragraph" className="text-center mb-4">
-        Please provide the details for your deposit.
-      </Typography>
-      <div className="flex flex-col space-y-4">
-        {user && (
-          <>
+    <>
+      {toastMessage.message && (
+       
+          <Toast
+            variant={toastMessage.type === 'success' ? 'success' : 'error'}
+            onDismiss={() => setToastMessage({ message: '', type: '' })}
+          >
+            {toastMessage.message}
+          </Toast>
+       
+      )}
+      <Modal isOpen={isOpen} onClose={onClose} loading={loading}>
+        <Typography variant="h4" className="text-center font-bold mb-4">
+          Deposit Funds
+        </Typography>
+        <Typography variant="paragraph" className="text-center mb-4">
+          Please provide the details for your deposit.
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col space-y-4">
+            {user && (
+              <>
+                <input
+                  type="text"
+                  value={user.firstname}
+                  disabled
+                  className="border border-gray-300 rounded-lg p-2 bg-gray-100"
+                  name="first_name"
+                />
+                <input
+                  type="text"
+                  value={user.lastname}
+                  disabled
+                  className="border border-gray-300 rounded-lg p-2 bg-gray-100"
+                  name="last_name"
+                />
+                <input
+                  type="email"
+                  value={user.email}
+                  disabled
+                  className="border border-gray-300 rounded-lg p-2 bg-gray-100"
+                  name="user"
+                />
+              </>
+            )}
             <input
-              type="text"
-              value={user.firstname}
-              disabled
-              className="border border-gray-300 rounded-lg p-2 bg-gray-100"
-              name="first_name"
+              type="number"
+              value={amount}
+              onChange={handleAmountChange}
+              placeholder="Enter Amount"
+              className="border border-gray-300 rounded-lg p-2"
+              name="amount"
             />
-            <input
-              type="text"
-              value={user.lastname}
-              disabled
-              className="border border-gray-300 rounded-lg p-2 bg-gray-100"
-              name="last_name"
-            />
-            <input
-              type="email"
-              value={user.email}
-              disabled
-              className="border border-gray-300 rounded-lg p-2 bg-gray-100"
-              name="email"
-            />
-          </>
-        )}
-        <input
-          type="number"
-          value={amount}
-          onChange={handleAmountChange}
-          placeholder="Enter Amount"
-          className="border border-gray-300 rounded-lg p-2"
-          name="amount"
-        />
-      </div>
-      <div className="flex justify-center mt-4">
-        <Button variant="outlined" color="blue" onClick={handleSubmit} disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit'}
-        </Button>
-      </div>
-    </Modal>
+          </div>
+          <div className="flex justify-center mt-4">
+            <Button variant="outlined" color="blue" type="submit" disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit'}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    </>
   );
 };
 
