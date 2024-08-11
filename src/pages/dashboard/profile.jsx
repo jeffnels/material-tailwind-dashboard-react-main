@@ -5,7 +5,6 @@ import {
   Avatar,
   Typography,
   Button,
-  input,
   Dialog,
   DialogHeader,
   DialogBody,
@@ -15,6 +14,17 @@ import { Toast } from "flowbite-react";
 import { useSpring, animated } from '@react-spring/web';
 import LogoutButton from "@/components/LogoutButton";
 import Loader from "@/components/Loader";
+import KycButton from "@/components/KycButton"; // Import KycButton component
+
+// Component to display initials
+const InitialsAvatar = ({ firstname, lastname }) => {
+  const initials = `${firstname.charAt(0)}${lastname.charAt(0)}`.toUpperCase();
+  return (
+    <div className="flex items-center justify-center h-16 w-16 rounded-full bg-blue-500 text-white text-xl font-bold">
+      {initials}
+    </div>
+  );
+};
 
 export function Profile() {
   const [user, setUser] = useState(null);
@@ -37,10 +47,7 @@ export function Profile() {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const userData = JSON.parse(storedUser);
-      setUser({
-        ...userData,
-        avatar: `https://api.dicebear.com/9.x/pixel-art/svg?seed=${userData.firstname}`
-      });
+      setUser(userData);
     }
   }, []);
 
@@ -93,6 +100,8 @@ export function Profile() {
 
   return (
     <>
+
+     {user.isVerified === 0 && <KycButton />} 
       <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-cover bg-center bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500">
         <div className="absolute inset-0 h-full w-full bg-gray-900/50" />
       </div>
@@ -100,12 +109,9 @@ export function Profile() {
         <CardBody className="p-4">
           <div className="mb-10 flex items-center justify-between flex-wrap gap-6">
             <div className="flex items-center gap-6">
-              <Avatar
-                src={user.avatar}
-                alt={user.firstname}
-                size="xl"
-                variant="rounded"
-                className="rounded-lg shadow-lg shadow-blue-gray-500/40"
+              <InitialsAvatar
+                firstname={user.firstname}
+                lastname={user.lastname}
               />
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1 font-semibold">
@@ -257,6 +263,8 @@ export function Profile() {
           </div>
         )}
       </Dialog>
+
+     
     </>
   );
 }
