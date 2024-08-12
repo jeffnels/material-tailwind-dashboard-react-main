@@ -29,6 +29,8 @@ import NoTransactionComponent from "@/components/NoTransactionComponent";
 import KycButton from "@/components/KycButton";
 import WithdrawalButton from "@/components/WithdrawalButton";
 import DepositButton from "@/components/DepositButton";
+import { Money } from "@phosphor-icons/react/dist/ssr";
+import { Coin, CreditCard, StackPlus } from "@phosphor-icons/react";
 // import { CreditCard, Money, StackPlus, TreasureChest } from "@phosphor-icons/react";
 // import { Coins } from "@phosphor-icons/react/dist/ssr";
 
@@ -107,7 +109,7 @@ export function Home() {
   return (
     <div className="mt-12">
       <div className="flex flex-col lg:flex-row lg:gap-4 ">
-        {isVerified === 0 && <KycButton />}
+
         <WithdrawalButton />
         <DepositButton />
       </div>
@@ -118,9 +120,9 @@ export function Home() {
           title="Balance"
           value={amount}
         
-          // icon={React.createElement(Money, {
-          //   className: "w-6 h-6 text-white",
-          // })}
+          icon={React.createElement(Money, {
+             className: "w-6 h-6 text-white",
+           })}
           footer={
             <Typography className="font-normal text-blue-gray-600">
               <strong className="text-green-500">Up</strong> since last month
@@ -132,9 +134,9 @@ export function Home() {
           key="bonus"
           title="Bonus"
           value={amount * 0.02}
-          // icon={React.createElement(Coins, {
-          //   className: "w-6 h-6 text-white",
-          // })}
+          icon={React.createElement(Coin, {
+            className: "w-6 h-6 text-white",
+          })}
           footer={
             <Typography className="font-normal text-blue-gray-600">
               <strong className="text-green-500">Up</strong> since last month
@@ -147,9 +149,9 @@ export function Home() {
        
           title="Profits"
           value={amount * 0.09}
-          // icon={React.createElement(StackPlus, {
-          //   className: "w-6 h-6 text-white",
-          // })}
+          icon={React.createElement(StackPlus, {
+            className: "w-6 h-6 text-white",
+           })}
           footer={
             <Typography className="font-normal text-blue-gray-600">
               <strong className="text-green-500">Up</strong> since last month
@@ -160,9 +162,9 @@ export function Home() {
           key="amount"
           title="Invested Amount"
           value={amount * 10}
-          // icon={React.createElement(CreditCard, {
-          //   className: "w-6 h-6 text-white",
-          // })}
+          icon={React.createElement(CreditCard, {
+            className: "w-6 h-6 text-white",
+          })}
           footer={
             <Typography className="font-normal text-blue-gray-600">
               <strong className="text-green-500">Up</strong> since last month

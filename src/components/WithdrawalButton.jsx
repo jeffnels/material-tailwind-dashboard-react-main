@@ -68,13 +68,13 @@ const WithdrawalButton = () => {
 
   return (
     <div className="relative">
-      <button onClick={() => setIsWithdrawalOpen(true)} className="bg-black text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700 min-w-[150px] text-sm">
+      <button onClick={() => setIsWithdrawalOpen(true)} className="bg-red-400 text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-700 min-w-[150px] text-sm">
         Withdraw
       </button>
 
       {isWithdrawalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <animated.div style={withdrawalSpring} className="modal bg-white p-6 rounded-lg shadow-lg">
+          <animated.div style={withdrawalSpring} className="modal bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
             <div className="modal-content">
               <h2 className="text-2xl mb-4">Withdraw Funds</h2>
               <input
@@ -82,12 +82,12 @@ const WithdrawalButton = () => {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="Enter amount"
-                className="input mb-4 p-2 border rounded"
+                className="input mb-4 p-2 border rounded w-full"
               />
               <select
                 value={method}
                 onChange={(e) => setMethod(e.target.value)}
-                className="input mb-4 p-2 border rounded"
+                className="input mb-4 p-2 border rounded w-full"
               >
                 <option value="">Select Method</option>
                 <option value="Bank">Bank</option>
@@ -105,7 +105,7 @@ const WithdrawalButton = () => {
 
       {isConfirmationOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <animated.div style={confirmationSpring} className="modal bg-white p-6 rounded-lg shadow-lg">
+          <animated.div style={confirmationSpring} className="modal bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
             <div className="modal-content">
               <h2 className="text-2xl mb-4">Confirmation</h2>
               <p>Your withdrawal request is being processed. More info will be sent to your email.</p>
@@ -117,7 +117,7 @@ const WithdrawalButton = () => {
 
       {isCryptoOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <animated.div style={cryptoSpring} className="modal bg-white p-6 rounded-lg shadow-lg">
+          <animated.div style={cryptoSpring} className="modal bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
             <div className="modal-content">
               <h2 className="text-2xl mb-4">Crypto Addresses</h2>
               <div className="mb-4">
@@ -132,7 +132,7 @@ const WithdrawalButton = () => {
       )}
 
       {toastMessage && (
-        <div className={`z-10 fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>
+        <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>
           <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')} style={{ backgroundColor: toastType === 'error' ? 'red' : 'green', color: 'white' }}>
             {toastMessage}
           </Toast>
