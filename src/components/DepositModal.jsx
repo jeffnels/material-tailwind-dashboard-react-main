@@ -19,9 +19,9 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
       style={fade}
       className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'} bg-black bg-opacity-50 transition-all`}
     >
-      <div className="relative bg-white rounded-xl shadow-md max-w-md mx-auto w-[30rem] p-6">
+      <div className="relative bg-white rounded-xl shadow-lg max-w-xl mx-auto w-[35rem] p-6">
         <div style={{ display: loading ? 'none' : 'block' }}>
-          <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700 absolute right-2 top-2" onClick={onClose} />
+          <XMarkIcon strokeWidth={2.5} className="h-5 w-5 text-red-700 absolute right-2 top-2 cursor-pointer" onClick={onClose} />
         </div>
         {loading ? <Loader /> : children}
       </div>
@@ -58,6 +58,17 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
     setToastMessage({ message: 'Address copied to clipboard!', type: 'success' });
   };
 
+  const cryptoAddresses = {
+    BTC: 'bc1qg7les2474fxy7xg2lu4mtpewn9hd9jk35kwjkg',
+    ETH: '0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7',
+    LTC: 'ltc1q8cxd7q2wsqjfd94nah0twhrf33w9ktelpynujx',
+    SOL: 'EdqhXJfAUjHPW17AZdB3DNTFPhRgrevsA3KveEorRXQ',
+    USDT_ETH: '0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7',
+    USDT_TRON: 'TKCSNZgDWbnVLAndat8b8nPFi8rjLxbvPZ',
+    BNB: 'bnb1cdefghijklmnopqrstuvwx2yza4',
+    DGB: 'dgb1abcdefghijklmnpqrstuvwx2yz'
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Typography variant="h4" className="text-center font-bold mb-4">
@@ -66,48 +77,17 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
       <div className="flex flex-col space-y-4">
         {paymentMethod === 'crypto' && (
           <>
-            <Typography
-              variant="paragraph"
-              className="cursor-pointer hover:underline"
-              onClick={() => handleCopyToClipboard('bc1qg7les2474fxy7xg2lu4mtpewn9hd9jk35kwjkg')}
-            >
-              BTC: <strong>bc1qg7les2474fxy7xg2lu4mtpewn9hd9jk35kwjkg</strong>
-            </Typography>
-            <Typography
-              variant="paragraph"
-              className="cursor-pointer hover:underline"
-              onClick={() => handleCopyToClipboard('0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7')}
-            >
-              ETH: <strong>0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7</strong>
-            </Typography>
-            <Typography
-              variant="paragraph"
-              className="cursor-pointer hover:underline"
-              onClick={() => handleCopyToClipboard('ltc1q8cxd7q2wsqjfd94nah0twhrf33w9ktelpynujx')}
-            >
-              LTC: <strong>ltc1q8cxd7q2wsqjfd94nah0twhrf33w9ktelpynujx</strong>
-            </Typography>
-            <Typography
-              variant="paragraph"
-              className="cursor-pointer hover:underline"
-              onClick={() => handleCopyToClipboard('EdqhXJfAUjHPW17AZdB3DNTFPhRgrevsA3KveEorRXQ')}
-            >
-              SOL: <strong>EdqhXJfAUjHPW17AZdB3DNTFPhRgrevsA3KveEorRXQ</strong>
-            </Typography>
-            <Typography
-              variant="paragraph"
-              className="cursor-pointer hover:underline"
-              onClick={() => handleCopyToClipboard('0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7')}
-            >
-              USDT(Eth): <strong>0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7</strong>
-            </Typography>
-            <Typography
-              variant="paragraph"
-              className="cursor-pointer hover:underline"
-              onClick={() => handleCopyToClipboard('TKCSNZgDWbnVLAndat8b8nPFi8rjLxbvPZ')}
-            >
-              USDT(Tron): <strong>TKCSNZgDWbnVLAndat8b8nPFi8rjLxbvPZ</strong>
-            </Typography>
+            {Object.keys(cryptoAddresses).map((key) => (
+              <div
+                key={key}
+                className="p-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-all break-words"
+                onClick={() => handleCopyToClipboard(cryptoAddresses[key])}
+              >
+                <Typography variant="paragraph" className="font-semibold">
+                  {key.replace('_', ' ')}: <strong>{cryptoAddresses[key]}</strong>
+                </Typography>
+              </div>
+            ))}
           </>
         )}
         <Button variant="outlined" color="blue" onClick={onClose}>
@@ -134,6 +114,7 @@ const DepositModal = ({ isOpen, onClose }) => {
   const [toastMessage, setToastMessage] = useState({ message: '', type: '' });
   const [isPaymentMethodsOpen, setPaymentMethodsOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [shouldSubmit, setShouldSubmit] = useState(false); // New state for submission
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -144,8 +125,13 @@ const DepositModal = ({ isOpen, onClose }) => {
     setAmount(event.target.value);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSelectPaymentMethod = (method) => {
+    setSelectedPaymentMethod(method);
+    setPaymentMethodsOpen(false);
+    setShouldSubmit(true); // Set to true to indicate submission should happen
+  };
+
+  const handleFinalSubmit = async () => { // New function to handle final submission
     setLoading(true);
 
     const transactionData = {
@@ -186,27 +172,26 @@ const DepositModal = ({ isOpen, onClose }) => {
       }
 
       setToastMessage({ message: 'Transaction successful!', type: 'success' });
-
-      // Open the Payment Methods modal after successful transaction
-      setPaymentMethodsOpen(true);
-
     } catch (error) {
       console.error('Error creating transaction or sending email:', error);
       setToastMessage({ message: 'Error creating transaction!', type: 'error' });
     } finally {
       setLoading(false);
+      setShouldSubmit(false); // Reset submission state
+      onClose(); // Close the modal after submission
     }
   };
 
-  const handleSelectPaymentMethod = (method) => {
-    setSelectedPaymentMethod(method);
-    setPaymentMethodsOpen(false);
-  };
+  useEffect(() => {
+    if (shouldSubmit) {
+      handleFinalSubmit(); // Trigger submission when "Done" button is clicked
+    }
+  }, [shouldSubmit]);
 
   return (
     <>
       {toastMessage.message && (
-        <Toast className=''
+        <Toast
           variant={toastMessage.type === 'success' ? 'success' : 'error'}
           onDismiss={() => setToastMessage({ message: '', type: '' })}
         >
@@ -221,7 +206,7 @@ const DepositModal = ({ isOpen, onClose }) => {
         <Typography variant="paragraph" className="text-center mb-4">
           Please provide the details for your deposit.
         </Typography>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="flex flex-col space-y-4">
             {user && (
               <>
@@ -252,13 +237,11 @@ const DepositModal = ({ isOpen, onClose }) => {
               type="number"
               value={amount}
               onChange={handleAmountChange}
-              required
               placeholder="Enter amount"
               className="border border-gray-300 rounded-lg p-2"
-              name="amount"
             />
-            <Button type="submit" variant="filled" color="blue">
-              Deposit
+            <Button variant="outlined" color="blue" onClick={() => setPaymentMethodsOpen(true)}>
+              Select Payment Method
             </Button>
           </div>
         </form>
