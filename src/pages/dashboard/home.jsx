@@ -133,7 +133,7 @@ export function Home() {
         <StatisticsCard
           key="bonus"
           title="Bonus"
-          value={amount * 0.02}
+          value={0}
           icon={React.createElement(Coin, {
             className: "w-6 h-6 text-white",
           })}
@@ -148,7 +148,7 @@ export function Home() {
           key="amount"
        
           title="Profits"
-          value={amount * 0.09}
+          value={0}
           icon={React.createElement(StackPlus, {
             className: "w-6 h-6 text-white",
            })}
@@ -161,7 +161,7 @@ export function Home() {
         <StatisticsCard
           key="amount"
           title="Invested Amount"
-          value={amount * 10}
+          value={0}
           icon={React.createElement(CreditCard, {
             className: "w-6 h-6 text-white",
           })}
@@ -277,8 +277,8 @@ export function Home() {
                                 {created_at}
                               </Typography>
                             </td>
-                            <td className="py-3 px-5 border-b border-blue-gray-50">
-                              <Typography variant="small" color="blue-gray">
+                            <td className="py-3 px-5 border-b border-blue-gray-50 whitespace-nowrap">
+                              <Typography variant="small" color="blue-gray whitespace-nowrap">
                                 {status}
                               </Typography>
                             </td>
