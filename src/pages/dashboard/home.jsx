@@ -108,7 +108,7 @@ export function Home() {
 
   return (
     <div className="mt-12">
-      <div className="flex flex-col lg:flex-row lg:gap-4 ">
+      <div className="flex  gap-4 ">
 
         <WithdrawalButton />
         <DepositButton />
