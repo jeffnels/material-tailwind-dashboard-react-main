@@ -71,54 +71,53 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-  <div className="p-4 sm:p-6 md:p-8 max-h-[80vh] overflow-y-auto">
-    <Typography variant="h5" className="text-center font-bold mb-4">
-      {`Payment Details for ${paymentMethod}`}
-    </Typography>
-    {paymentMethod !== 'crypto' && (
- <Typography variant="h5" className="text-center font-bold mb-4">
-      check your mail for mor info on how to pay 
-    </Typography>
-    ) }
-   
-    <div className="flex flex-col space-y-4">
-      {paymentMethod === 'crypto' && (
-        <>
-          {Object.keys(cryptoAddresses).map((key) => (
-            <div
-              key={key}
-              className="p-3 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-all break-words text-sm sm:text-base"
-              onClick={() => handleCopyToClipboard(cryptoAddresses[key])}
-            >
-              <Typography variant="body2" className="font-semibold">
-                {key.replace('_', ' ')}: <strong>{cryptoAddresses[key]}</strong>
-              </Typography>
-            </div>
-          ))}
-        </>
-      )}
-      <Button
-        variant="outlined"
-        color="blue"
-        className="w-full sm:w-auto self-center"
-        onClick={onClose}
-      >
-        Done
-      </Button>
-    </div>
-    {toastMessage.message && (
-      <Toast
-        variant={toastMessage.type === 'success' ? 'success' : 'error'}
-        onDismiss={() => setToastMessage({ message: '', type: '' })}
-      >
-        {toastMessage.message}
-      </Toast>
-    )}
-  </div>
-</Modal>
-
+      <div className="max-w-[90%]  p-3 sm:p-4 md:p-6 bg-white rounded-lg shadow-lg max-h-[80vh] overflow-y-auto mx-auto">
+        <Typography variant="h5" className="text-center font-bold mb-4">
+          {`Payment Details for ${paymentMethod}`}
+        </Typography>
+        {paymentMethod !== 'crypto' && (
+          <Typography variant="h5" className="text-center font-bold mb-4">
+            Check your mail for more info on how to pay
+          </Typography>
+        )}
+        <div className="flex flex-col space-y-3">
+          {paymentMethod === 'crypto' && (
+            <>
+              {Object.keys(cryptoAddresses).map((key) => (
+                <div
+                  key={key}
+                  className="p-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-all break-words text-xs sm:text-sm md:text-base"
+                  onClick={() => handleCopyToClipboard(cryptoAddresses[key])}
+                >
+                  <Typography variant="body2" className="font-semibold">
+                    {key.replace('_', ' ')}: <strong>{cryptoAddresses[key]}</strong>
+                  </Typography>
+                </div>
+              ))}
+            </>
+          )}
+          <Button
+            variant="outlined"
+            color="blue"
+            className="w-full sm:w-auto self-center"
+            onClick={onClose}
+          >
+            Done
+          </Button>
+        </div>
+        {toastMessage.message && (
+          <Toast
+            variant={toastMessage.type === 'success' ? 'success' : 'error'}
+            onDismiss={() => setToastMessage({ message: '', type: '' })}
+          >
+            {toastMessage.message}
+          </Toast>
+        )}
+      </div>
+    </Modal>
   );
 };
+
 
 // Main Deposit Modal Component
 const DepositModal = ({ isOpen, onClose }) => {
@@ -192,7 +191,7 @@ const DepositModal = ({ isOpen, onClose }) => {
     } finally {
       setLoading(false);
       setShouldSubmit(false); // Reset submission state
-      onClose(); // Close the modal after submission
+      
     }
   };
 
