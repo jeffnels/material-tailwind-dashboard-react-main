@@ -31,7 +31,8 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
 
 // Payment Methods Modal Component
 const PaymentMethodsModal = ({ isOpen, onClose, onSelectPaymentMethod }) => (
-  <Modal isOpen={isOpen} onClose={onClose}>
+<Modal isOpen={isOpen} onClose={onClose}>
+  <div className=" mx-auto p-4 bg-white rounded-lg shadow-lg">
     <Typography variant="h4" className="text-center font-bold mb-4">
       Select Payment Method
     </Typography>
@@ -46,7 +47,10 @@ const PaymentMethodsModal = ({ isOpen, onClose, onSelectPaymentMethod }) => (
         Pay with Bank
       </Button>
     </div>
-  </Modal>
+  </div>
+</Modal>
+
+
 );
 
 // Payment Details Modal Component
@@ -65,8 +69,6 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
     SOL: 'EdqhXJfAUjHPW17AZdB3DNTFPhRgrevsA3KveEorRXQ',
     USDT_ETH: '0xBa498F96215d799e6145C4DAeA3887e2D65EE8a7',
     USDT_TRON: 'TKCSNZgDWbnVLAndat8b8nPFi8rjLxbvPZ',
-    BNB: 'bnb1cdefghijklmnopqrstuvwx2yza4',
-    DGB: 'dgb1abcdefghijklmnpqrstuvwx2yz'
   };
 
   return (
@@ -109,6 +111,8 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
           <Toast
             variant={toastMessage.type === 'success' ? 'success' : 'error'}
             onDismiss={() => setToastMessage({ message: '', type: '' })}
+            className=' absolute'
+            style={{}}
           >
             {toastMessage.message}
           </Toast>
