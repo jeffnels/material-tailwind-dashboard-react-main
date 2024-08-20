@@ -68,7 +68,7 @@ const WithdrawalButton = () => {
 
   return (
     <div className="relative">
-      <button onClick={() => setIsWithdrawalOpen(true)} className="bg-red-400 text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-700 min-w-[150px] text-sm">
+      <button onClick={() => setIsWithdrawalOpen(true)} className="bg-red-500 text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-700 min-w-[150px] text-sm">
         Withdraw
       </button>
 
