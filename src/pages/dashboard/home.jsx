@@ -6,20 +6,15 @@ import {
   CardBody,
 } from "@material-tailwind/react";
 import { StatisticsCard } from "@/widgets/cards";
-import { StatisticsChart } from "@/widgets/charts";
-import {
-  statisticsCardsData,
-  statisticsChartsData,
-  ordersOverviewData,
-} from "@/data";
-import { useNavigate } from "react-router-dom";
+import { Money } from "@phosphor-icons/react";
+import { Coin, CreditCard, StackPlus } from "@phosphor-icons/react";
 import NoTransactionComponent from "@/components/NoTransactionComponent";
 import KycButton from "@/components/KycButton";
 import WithdrawalButton from "@/components/WithdrawalButton";
 import DepositButton from "@/components/DepositButton";
-import { Money } from "@phosphor-icons/react";
-import { Coin, CreditCard, StackPlus } from "@phosphor-icons/react";
 import reloadButton from '../../images/reload.png';
+import '../../styles.css';
+import { useNavigate } from "react-router-dom";
 
 export function Home() {
   const [projectsTableData, setProjectsTableData] = useState([]);
@@ -29,6 +24,8 @@ export function Home() {
   const [itemsPerPage] = useState(10);
   const [isVerified, setIsVerified] = useState(0);
   const [amount, setAmount] = useState(0);
+  const [isRotating, setIsRotating] = useState(false);
+
   const navigate = useNavigate();
 
   const fetchUserInfo = async () => {
@@ -40,6 +37,8 @@ export function Home() {
         return;
       }
 
+      setIsRotating(true);
+
       const response = await fetch(
         "https://tradesphere-backend.onrender.com/api/users/me",
         {
@@ -49,17 +48,23 @@ export function Home() {
           },
         }
       );
+      setIsRotating(false);
+
       if (!response.ok) {
         throw new Error("Failed to fetch user info");
       }
+
       const userDetails = await response.json();
       console.log("Fetched user details:", userDetails);
+
       if (userDetails.amount) {
         setAmount(userDetails.amount);
       }
+
       setIsVerified(userDetails.isVerified);
       localStorage.setItem("user", JSON.stringify(userDetails)); // Update localStorage with the new details
     } catch (error) {
+      setIsRotating(false);
       console.error("Error fetching user info", error);
     }
   };
@@ -91,7 +96,13 @@ export function Home() {
         }
         const data = await response.json();
         console.log("Fetched data:", data);
-        setProjectsTableData(data || []);
+        
+        // Sort data by latest date first
+        const sortedData = data.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+        
+        setProjectsTableData(sortedData || []);
         setLoading(false);
         setAuthenticated(true);
       } catch (error) {
@@ -117,14 +128,13 @@ export function Home() {
 
   return (
     <div className="mt-12">
-      <div className="flex  gap-4  ">
-
+      <div className="flex gap-4">
         <WithdrawalButton />
         <DepositButton />
         <img 
           src={reloadButton} 
           alt="Reload"
-          className="h-[24px] w-[24px] mt-2 cursor-pointer mr-3"
+          className={`h-[20px] w-[20px] mt-2 cursor-pointer mr-3 ${isRotating ? 'rotate-animation' : ''}`}
           onClick={fetchUserInfo} // Fetch updated user info on reload
         />
       </div>
@@ -142,7 +152,6 @@ export function Home() {
             </Typography>
           }
         />
-
         <StatisticsCard
           key="bonus"
           title="Bonus"
@@ -156,7 +165,6 @@ export function Home() {
             </Typography>
           }
         />
-
         <StatisticsCard
           key="profits"
           title="Profits"
@@ -170,7 +178,6 @@ export function Home() {
             </Typography>
           }
         />
-
         <StatisticsCard
           key="investedAmount"
           title="Invested Amount"
@@ -237,7 +244,7 @@ export function Home() {
                         </tr>
                       ) : (
                         currentItems.map(({ 
-                          transactionsId, amount, type, package_type, created_at, status }) => (
+                          transactionsId, amount, type, created_at, status }) => (
                           <tr key={transactionsId}>
                             <td className="py-3 px-5 border-b border-blue-gray-50 whitespace-nowrap">
                               <Typography variant="small" color="blue-gray">
@@ -255,7 +262,7 @@ export function Home() {
                               </Typography>
                             </td>
                             <td className="py-3 px-5 border-b border-blue-gray-50">
-                              <Typography variant="small" color="blue-gray">
+                              <Typography variant="small" color="blue-gray" className=" whitespace-nowrap">
                                 {created_at}
                               </Typography>
                             </td>
@@ -271,21 +278,21 @@ export function Home() {
                   </table>
                 </div>
                 {/* Pagination Controls */}
-                <div className="flex justify-center mt-4">
+                <div className="flex justify-between items-center py-3 px-5">
                   <button
-                    className="px-4 py-2 mx-2 text-sm text-white bg-blue-gray-500 rounded disabled:opacity-50"
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(currentPage - 1)}
+                    className="text-sm text-blue-500 hover:underline disabled:text-gray-400"
                   >
                     Previous
                   </button>
-                  <span className="px-4 py-2 mx-2 text-sm">
+                  <Typography variant="small" color="blue-gray">
                     Page {currentPage} of {totalPages}
-                  </span>
+                  </Typography>
                   <button
-                    className="px-4 py-2 mx-2 text-sm text-white bg-blue-gray-500 rounded disabled:opacity-50"
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(currentPage + 1)}
+                    className="text-sm text-blue-500 hover:underline disabled:text-gray-400"
                   >
                     Next
                   </button>
