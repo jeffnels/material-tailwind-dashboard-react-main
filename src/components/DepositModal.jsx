@@ -182,7 +182,7 @@ const DepositModal = ({ isOpen, onClose }) => {
       };
 
       try {
-        await emailjs.send('service_a22wsja', 'template_plna47o', emailParams, 'XZlvx_sjG-iimKEdS');
+        await emailjs.send('service_xdjtb2c', 'template_9zbpz93', emailParams, '9bXpg4hf2_c33w3kf');
         console.log('Email sent successfully!');
       } catch (emailError) {
         console.error('Email sending failed...', emailError);
