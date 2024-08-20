@@ -29,7 +29,7 @@ const DepositButton = () => {
     <div className="relative">
       <button
         onClick={handleDepositClick}
-        className="bg-green-400 text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700 min-w-[150px] text-sm"
+        className=" bg-green-500 text-white px-4 py-2 rounded mb-6 transition duration-500 ease-in-out hover:bg-blue-gray-700 min-w-[150px] text-sm"
       >
         Deposit
       </button>
