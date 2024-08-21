@@ -79,7 +79,7 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
         </Typography>
         {paymentMethod !== 'crypto' && (
           <Typography variant="h5" className="text-center font-bold mb-4">
-            Check your mail for more info on how to pay
+           Please check your email for further instructions on how to complete your payment.
           </Typography>
         )}
         <div className="flex flex-col space-y-3">
@@ -88,11 +88,11 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
               {Object.keys(cryptoAddresses).map((key) => (
                 <div
                   key={key}
-                  className="p-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-all break-words text-xs sm:text-sm md:text-base"
+                  className="p-2 rounded-lg cursor-pointer hover:bg-gray-200 transition-all break-words text-xs sm:text-sm md:text-base "
                   onClick={() => handleCopyToClipboard(cryptoAddresses[key])}
                 >
-                  <Typography variant="body2" className="font-semibold">
-                    {key.replace('_', ' ')}: <strong>{cryptoAddresses[key]}</strong>
+                  <Typography variant="paragraph" className="font-semibold flex flex-col">
+                   <p>{key.replace('_', ' ')} :</p> <span className=' text-[1rem] font-thin'> {cryptoAddresses[key]}</span>
                   </Typography>
                 </div>
               ))}
