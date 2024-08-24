@@ -72,7 +72,8 @@ const handleSubmit = async (e) => {
 
     // Set success message
     setSuccessMessage('User registered successfully');
-    navigate("/auth/sign-in");
+    navigate(`/auth/otp?email=${formData.email}`);
+
 
     // Clear form data
     setFormData({
