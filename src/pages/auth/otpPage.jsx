@@ -1,54 +1,55 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Toast } from 'flowbite-react';
 
 const OtpPage = () => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const [error, setError] = useState('');
-  const [timeLeft, setTimeLeft] = useState(60); // 60 seconds timer
+  const [timeLeft, setTimeLeft] = useState(60);
   const [isResendEnabled, setIsResendEnabled] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false); // Loading state for Verify OTP button
   const inputRefs = useRef([]);
   const location = useLocation();
+  const navigate = useNavigate(); // Use useNavigate for navigation
+  let timer;
 
   // Extract the email parameter from the URL
   const queryParams = new URLSearchParams(location.search);
   const email = queryParams.get('email');
 
   useEffect(() => {
-    // Show the toast on page load
     setShowToast(true);
     setToastMessage(`OTP has been sent to ${email}, verify your email to continue.`);
 
-    // Hide the toast after 5 seconds
     const toastTimeout = setTimeout(() => {
       setShowToast(false);
     }, 5000);
 
-    // Timer for OTP resend
-    let timer;
-    if (timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            setIsResendEnabled(true);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      setIsResendEnabled(true);
-    }
+    startTimer();
 
     return () => {
       clearInterval(timer);
       clearTimeout(toastTimeout);
     };
-  }, [email, timeLeft]);
+  }, [email]);
+
+  const startTimer = () => {
+    setTimeLeft(60);
+    setIsResendEnabled(false);
+    timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setIsResendEnabled(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
   const handleChange = (element, index) => {
     const value = element.value;
@@ -57,7 +58,6 @@ const OtpPage = () => {
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Move to the next input
       if (index < 5 && value) {
         inputRefs.current[index + 1].focus();
       }
@@ -81,8 +81,7 @@ const OtpPage = () => {
       setError('Please enter a 6-digit OTP.');
     } else {
       setError('');
-      setLoading(true); // Set loading state to true
-
+      setVerifyLoading(true); // Start loading
       try {
         const response = await fetch('https://tradesphere-backend.onrender.com/api/users/verify-email', {
           method: 'POST',
@@ -98,55 +97,63 @@ const OtpPage = () => {
         const result = await response.json();
 
         if (response.ok) {
-          console.log('OTP verified successfully:', result);
-
-          // Save user data to localStorage
           localStorage.setItem('user', JSON.stringify(result.user));
-
-          // Show success message
           setToastMessage('Email verified successfully!');
           setShowToast(true);
 
-          // Hide the toast after 5 seconds
           setTimeout(() => {
             setShowToast(false);
-          }, 5000);
-
-          // Redirect or handle success (e.g., navigate to another page)
+            navigate('/auth/sign-in'); 
+          }, 2000);
         } else {
-          console.error('OTP verification failed:', result);
           setError(result.message || 'OTP verification failed.');
         }
       } catch (err) {
-        console.error('An error occurred:', err);
         setError('An error occurred while verifying OTP.');
       } finally {
-        setLoading(false); // Set loading state to false
+        setVerifyLoading(false); // Stop loading
+        setOtp(new Array(6).fill(''));
+        inputRefs.current[0].focus();
       }
-
-      setOtp(new Array(6).fill(''));
-      inputRefs.current[0].focus();
     }
   };
 
   const handleResendOtp = async () => {
-    setLoading(true); // Set loading state to true
-    setOtp(new Array(6).fill(''));
-    setTimeLeft(60);
+    setLoading(true);
     setIsResendEnabled(false);
 
     try {
-      // Call your API to resend OTP
-      console.log('OTP Resent');
+      const response = await fetch('https://tradesphere-backend.onrender.com/api/users/resend-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: 'johnkingsleyegeonu@gmail.com' }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setToastMessage(result.message);
+        setShowToast(true);
+
+        setTimeout(() => {
+          setShowToast(false);
+        }, 5000);
+
+        startTimer();
+      } else {
+        setError(result.message || 'Failed to resend OTP.');
+      }
     } catch (err) {
-      console.error('An error occurred while resending OTP:', err);
+      setError('An error occurred while resending OTP.');
     } finally {
-      setLoading(false); // Set loading state to false
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6 ">
       <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
         <h1 className="text-2xl font-bold text-center mb-6">OTP Verification</h1>
         <form onSubmit={handleSubmit}>
@@ -160,17 +167,17 @@ const OtpPage = () => {
                 onChange={(e) => handleChange(e.target, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 ref={(el) => (inputRefs.current[index] = el)}
-                className="w-12 h-12 text-center border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-lg"
+                className="w-10 h-10 text-center border border-gray-300 rounded focus:outline-none focus:border-blue-500 text-lg"
               />
             ))}
           </div>
           {error && <p className="text-red-500 text-xs mb-4">{error}</p>}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
-            disabled={loading} // Disable button when loading
+            disabled={verifyLoading} // Disable button while loading
+            className={`w-full bg-blue-500 text-white font-bold py-2 px-4 rounded ${verifyLoading ? 'opacity-50' : 'hover:bg-blue-700'}`}
           >
-            {loading ? 'Verifying...' : 'Verify OTP'}
+            {verifyLoading ? 'Verifying...' : 'Verify OTP'}
           </button>
         </form>
         <div className="flex justify-between items-center mt-4">
@@ -179,7 +186,7 @@ const OtpPage = () => {
           </p>
           <button
             onClick={handleResendOtp}
-            disabled={!isResendEnabled || loading} // Disable button when loading or resend is not enabled
+            disabled={!isResendEnabled || loading}
             className={`text-blue-500 text-sm font-bold ${(!isResendEnabled || loading) ? 'opacity-50' : 'hover:text-blue-700'}`}
           >
             {loading ? 'Resending...' : 'Resend OTP'}
