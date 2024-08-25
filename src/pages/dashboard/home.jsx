@@ -209,7 +209,7 @@ export function Home() {
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
             {loading ? (
-              <Typography variant="body" className="p-4 text-center text-blue-gray-500">
+              <Typography  className="p-4 text-center text-blue-gray-500">
                 Loading transactions...
               </Typography>
             ) : (
@@ -237,7 +237,7 @@ export function Home() {
                       {currentItems.length === 0 ? (
                         <tr>
                           <td colSpan="6" className="py-3 px-5 border-b border-blue-gray-50">
-                            <Typography variant="body" className="p-4 text-center text-blue-gray-500">
+                            <Typography  className="p-4 text-center text-blue-gray-500">
                               <NoTransactionComponent />
                             </Typography>
                           </td>
