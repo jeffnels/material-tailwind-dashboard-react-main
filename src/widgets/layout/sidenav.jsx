@@ -27,10 +27,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
      
       <div> 
         <div className="relative">
-        <Link to="/dashboard/home" className="py-6 px-8">
-          <p className={`${sidenavType === "dark" ? "white" : "blue-gray"} text-xl font-bold ml-4`}
+        <Link to="/dashboard/home" className="py-6 px-8 text-center">
+          <p className={`${sidenavType === "dark" ? "white" : "blue-gray"} text-2xl font-bold ml-4`}
           >
-            Tradesphere<span className="text-yellow-800">hub</span>
+            Tradesphere<span className="text-yellow-600">hub</span>
           </p>
         </Link>
         <IconButton
