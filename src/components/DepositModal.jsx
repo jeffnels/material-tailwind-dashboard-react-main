@@ -31,24 +31,24 @@ const Modal = ({ isOpen, children, onClose, loading }) => {
 
 // Payment Methods Modal Component
 const PaymentMethodsModal = ({ isOpen, onClose, onSelectPaymentMethod }) => (
-<Modal isOpen={isOpen} onClose={onClose}>
-  <div className=" mx-auto p-4 bg-white rounded-lg shadow-lg">
-    <Typography variant="h4" className="text-center font-bold mb-4">
-      Select Payment Method
-    </Typography>
-    <div className="flex flex-col space-y-4">
-      <Button variant="outlined" color="blue" onClick={() => onSelectPaymentMethod('crypto')}>
-        Pay with Crypto
-      </Button>
-      <Button variant="outlined" color="blue" onClick={() => onSelectPaymentMethod('cashapp')}>
-        Pay with CashApp
-      </Button>
-      <Button variant="outlined" color="blue" onClick={() => onSelectPaymentMethod('bank')}>
-        Pay with Bank
-      </Button>
+  <Modal isOpen={isOpen} onClose={onClose}>
+    <div className=" mx-auto p-4 bg-white rounded-lg shadow-lg">
+      <Typography variant="h4" className="text-center font-bold mb-4">
+        Select Payment Method
+      </Typography>
+      <div className="flex flex-col space-y-4">
+        <Button variant="outlined" color="blue" onClick={() => onSelectPaymentMethod('crypto')}>
+          Pay with Crypto
+        </Button>
+        <Button variant="outlined" color="blue" onClick={() => onSelectPaymentMethod('cashapp')}>
+          Pay with CashApp
+        </Button>
+        <Button variant="outlined" color="blue" onClick={() => onSelectPaymentMethod('bank')}>
+          Pay with Bank
+        </Button>
+      </div>
     </div>
-  </div>
-</Modal>
+  </Modal>
 
 
 );
@@ -79,7 +79,7 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
         </Typography>
         {paymentMethod !== 'crypto' && (
           <Typography variant="h5" className="text-center font-bold mb-4">
-           Please check your email for further instructions on how to complete your payment.
+            Please check your email for further instructions on how to complete your payment.
           </Typography>
         )}
         <div className="flex flex-col space-y-3">
@@ -92,7 +92,7 @@ const PaymentDetailsModal = ({ isOpen, onClose, paymentMethod }) => {
                   onClick={() => handleCopyToClipboard(cryptoAddresses[key])}
                 >
                   <Typography variant="paragraph" className="font-semibold flex flex-col">
-                   <p>{key.replace('_', ' ')} :</p> <span className=' text-[1rem] font-thin'> {cryptoAddresses[key]}</span>
+                    <p>{key.replace('_', ' ')} :</p> <span className=' text-[1rem] font-thin'> {cryptoAddresses[key]}</span>
                   </Typography>
                 </div>
               ))}
@@ -132,7 +132,7 @@ const DepositModal = ({ isOpen, onClose }) => {
   const [isPaymentMethodsOpen, setPaymentMethodsOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [shouldSubmit, setShouldSubmit] = useState(false); // New state for submission
-
+ const [error, setError] = useState('');
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     setUser(storedUser);
@@ -191,11 +191,14 @@ const DepositModal = ({ isOpen, onClose }) => {
       setToastMessage({ message: 'Transaction successful!', type: 'success' });
     } catch (error) {
       console.error('Error creating transaction or sending email:', error);
+      console.log('Error:', error);
+
       setToastMessage({ message: 'Error creating transaction!', type: 'error' });
+      setError('Error creating transaction or sending email. Please try again.');
     } finally {
       setLoading(false);
       setShouldSubmit(false); // Reset submission state
-      
+
     }
   };
 
@@ -204,6 +207,15 @@ const DepositModal = ({ isOpen, onClose }) => {
       handleFinalSubmit(); // Trigger submission when "Done" button is clicked
     }
   }, [shouldSubmit]);
+
+  const handleButtonClick = () => {
+    if (amount.trim() === '') {
+      setToastMessage({ message: 'Please enter an amount before proceeding.', type: 'error' });
+      setPaymentMethodsOpen(false)
+    } else {
+      setPaymentMethodsOpen(true);
+    }
+  };
 
   return (
     <>
@@ -217,6 +229,7 @@ const DepositModal = ({ isOpen, onClose }) => {
       )}
 
       <Modal isOpen={isOpen && !isPaymentMethodsOpen && !selectedPaymentMethod} onClose={onClose} loading={loading}>
+
         <Typography variant="h4" className="text-center font-bold mb-4">
           Deposit Funds
         </Typography>
@@ -257,7 +270,10 @@ const DepositModal = ({ isOpen, onClose }) => {
               placeholder="Enter amount"
               className="border border-gray-300 rounded-lg p-2"
             />
-            <Button variant="outlined" color="blue" onClick={() => setPaymentMethodsOpen(true)}>
+            {error && (
+              <p className="text-red-500 text-center relative z-10">{error}</p> 
+            )}
+            <Button variant="outlined" color="blue" onClick={handleButtonClick} >
               Select Payment Method
             </Button>
           </div>
