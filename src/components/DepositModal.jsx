@@ -132,7 +132,7 @@ const DepositModal = ({ isOpen, onClose }) => {
   const [isPaymentMethodsOpen, setPaymentMethodsOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [shouldSubmit, setShouldSubmit] = useState(false); // New state for submission
- const [error, setError] = useState('');
+  const [error, setError] = useState('');
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     setUser(storedUser);
@@ -236,7 +236,7 @@ const DepositModal = ({ isOpen, onClose }) => {
         <Typography variant="paragraph" className="text-center mb-4">
           Please provide the details for your deposit.
         </Typography>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={(e) => e.preventDefault()} className="relative">
           <div className="flex flex-col space-y-4">
             {user && (
               <>
@@ -270,14 +270,18 @@ const DepositModal = ({ isOpen, onClose }) => {
               placeholder="Enter amount"
               className="border border-gray-300 rounded-lg p-2"
             />
-            {error && (
-              <p className="text-red-500 text-center relative z-10">{error}</p> 
-            )}
-            <Button variant="outlined" color="blue" onClick={handleButtonClick} >
+          {error && (
+  <p className="text-red-500 text-center mb-2">
+    {error}
+  </p>
+)}
+
+            <Button variant="outlined" color="blue" onClick={handleButtonClick}>
               Select Payment Method
             </Button>
           </div>
         </form>
+
       </Modal>
 
       <PaymentMethodsModal
