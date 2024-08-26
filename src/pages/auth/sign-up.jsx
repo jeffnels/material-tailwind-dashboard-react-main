@@ -119,7 +119,7 @@ const handleSubmit = async (e) => {
         />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white bg-black bg-opacity-50 p-4  h-full w-full flex items-center justify-center" style={{ animation: "fadeIn 1s ease-in forwards" }}>
-            <h1 className="text-[2rem] font-[900]" style={{ animation: "fadeIn 1s ease-out .0s forwards" }}>Welcome to Tradesphare<span className="text-yellow-800 ">hub</span></h1>
+            <h1 className="text-[2rem] font-[900]" style={{ animation: "fadeIn 1s ease-out .0s forwards" }}>Welcome to Tradesphare<span className="text-yellow-500 ">hub</span></h1>
           </div>
         </div>
       </div>

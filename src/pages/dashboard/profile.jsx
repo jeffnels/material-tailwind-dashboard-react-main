@@ -131,7 +131,7 @@ export function Profile() {
           </div>
 
           <div className="mb-10">
-            <Typography variant="h6" color="blue-gray" className="mb-2 font-semibold">
+            <Typography variant="h6" color="blue-gray" className="mb-2 font-semibold text-lg">
               Profile Information
             </Typography>
             <div className="space-y-4">
@@ -141,10 +141,10 @@ export function Profile() {
                 { label: 'Status', value: user.status },
               ].map((info, index) => (
                 <Card key={index} className="p-4 mb-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <Typography variant="h6" color="blue-gray" className="font-semibold text-sm">
+                  <Typography variant="p" color="blue-gray" className="font-semibold  text-md">
                     <strong>{info.label}: </strong>
                   </Typography>
-                  <Typography variant="h6" color="blue-gray" className="text-xs">
+                  <Typography variant="p" color="blue-gray" className="text-md">
                     {info.value}
                   </Typography>
                 </Card>
