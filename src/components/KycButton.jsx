@@ -79,7 +79,7 @@ const KycButton = () => {
   setAddress('');
   setCountry('');
 
-  \
+  
   setTimeout(() => {
     setIsSecondModalOpen(false);
   }, 3000); 
