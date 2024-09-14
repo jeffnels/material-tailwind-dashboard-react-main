@@ -50,36 +50,42 @@ const KycButton = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+  e.preventDefault();
+  console.log(formData);
 
-    // Example validation and submission handling
-    if (!formData.firstName || !formData.lastName || !formData.address || !formData.idNumber) {
-      setToastMessage('Please fill in all required fields.');
-      setToastType('error');
-      return;
-    }
+  // Example validation and submission handling
+  if (!formData.firstName || !formData.lastName || !formData.address || !formData.idNumber) {
+    setToastMessage('Please fill in all required fields.');
+    setToastType('error');
+    return;
+  }
 
-    // Simulate form submission success
-    setToastMessage('Form submitted successfully!');
-    setToastType('success');
+  // Simulate form submission success
+  setToastMessage('Form submitted successfully!');
+  setToastType('success');
 
-    // Clear form inputs on successful submission
-    setFormData({
-      firstName: '',
-      lastName: '',
-      dob: '',
-      idNumber: '',
-      idType: '',
-      address: '',
-      expiryDate: '',
-      frontImage: null,
-      backImage: null,
-    });
-    setAddress('');
-    setCountry('');
+  // Clear form inputs on successful submission
+  setFormData({
+    firstName: '',
+    lastName: '',
+    dob: '',
+    idNumber: '',
+    idType: '',
+    address: '',
+    expiryDate: '',
+    frontImage: null,
+    backImage: null,
+  });
+  setAddress('');
+  setCountry('');
+
+  \
+  setTimeout(() => {
     setIsSecondModalOpen(false);
-  };
+  }, 3000); 
+};
+
+
   const modalSpring = useSpring({
     opacity: isOpen ? 1 : 0,
     transform: isOpen ? 'translateY(0)' : 'translateY(-50%)',
@@ -141,7 +147,7 @@ const KycButton = () => {
               </button>
               <h2 className="text-xl font-semibold mb-4 text-center">Identity Verification</h2>
               {toastMessage && (
-                <div className={` z-10 fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>
+                <div className={` z-10 fixed buttom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>
                   <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')} style={{ backgroundColor: toastType === 'error' ? 'red' : 'green', color: 'white' }}>
                     {toastMessage}
                   </Toast>

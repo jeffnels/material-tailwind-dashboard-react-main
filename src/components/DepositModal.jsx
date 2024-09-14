@@ -128,11 +128,12 @@ const DepositModal = ({ isOpen, onClose }) => {
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [toastMessage, setToastMessage] = useState({ message: '', type: '' });
   const [isPaymentMethodsOpen, setPaymentMethodsOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [shouldSubmit, setShouldSubmit] = useState(false); // New state for submission
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     setUser(storedUser);
@@ -148,7 +149,7 @@ const DepositModal = ({ isOpen, onClose }) => {
     setShouldSubmit(true); // Set to true to indicate submission should happen
   };
 
-  const handleFinalSubmit = async () => { // New function to handle final submission
+  const handleFinalSubmit = async () => {
     setLoading(true);
 
     const transactionData = {
@@ -188,54 +189,66 @@ const DepositModal = ({ isOpen, onClose }) => {
         console.error('Email sending failed...', emailError);
       }
 
-      setToastMessage({ message: 'Transaction successful!', type: 'success' });
+      setSuccessMessage('Transaction successfully created!');
+      setError(''); // Clear error if success
     } catch (error) {
       console.error('Error creating transaction or sending email:', error);
-      console.log('Error:', error);
-
-      setToastMessage({ message: 'Error creating transaction!', type: 'error' });
       setError('Error creating transaction or sending email. Please try again.');
+      setSuccessMessage(''); // Clear success message if there's an error
     } finally {
       setLoading(false);
       setShouldSubmit(false); // Reset submission state
-
     }
   };
 
   useEffect(() => {
     if (shouldSubmit) {
-      handleFinalSubmit(); // Trigger submission when "Done" button is clicked
+      handleFinalSubmit();
     }
   }, [shouldSubmit]);
 
+  // Automatically clear messages after 3 seconds
+  useEffect(() => {
+    if (error || successMessage) {
+      const timer = setTimeout(() => {
+        setError('');
+        setSuccessMessage('');
+      }, 3000); // 3 seconds timeout
+
+      // Cleanup the timer on unmount or when the message changes
+      return () => clearTimeout(timer);
+    }
+  }, [error, successMessage]);
+
   const handleButtonClick = () => {
     if (amount.trim() === '') {
-      setToastMessage({ message: 'Please enter an amount before proceeding.', type: 'error' });
-      setPaymentMethodsOpen(false)
+      setError('Please enter an amount before proceeding.');
+      setSuccessMessage(''); // Clear success message
+      setPaymentMethodsOpen(false);
     } else {
+      setError(''); // Clear error if amount is valid
       setPaymentMethodsOpen(true);
     }
   };
 
   return (
     <>
-      {toastMessage.message && (
-        <Toast
-          variant={toastMessage.type === 'success' ? 'success' : 'error'}
-          onDismiss={() => setToastMessage({ message: '', type: '' })}
-        >
-          {toastMessage.message}
-        </Toast>
-      )}
-
       <Modal isOpen={isOpen && !isPaymentMethodsOpen && !selectedPaymentMethod} onClose={onClose} loading={loading}>
-
         <Typography variant="h4" className="text-center font-bold mb-4">
           Deposit Funds
         </Typography>
         <Typography variant="paragraph" className="text-center mb-4">
           Please provide the details for your deposit.
         </Typography>
+
+        {error && (
+          <p className="text-red-500 text-center mb-2">{error}</p>
+        )}
+
+        {successMessage && (
+          <p className="text-green-500 text-center mb-2">{successMessage}</p>
+        )}
+
         <form onSubmit={(e) => e.preventDefault()} className="relative">
           <div className="flex flex-col space-y-4">
             {user && (
@@ -263,6 +276,7 @@ const DepositModal = ({ isOpen, onClose }) => {
                 />
               </>
             )}
+
             <input
               type="number"
               value={amount}
@@ -270,18 +284,12 @@ const DepositModal = ({ isOpen, onClose }) => {
               placeholder="Enter amount"
               className="border border-gray-300 rounded-lg p-2"
             />
-          {error && (
-  <p className="text-red-500 text-center mb-2">
-    {error}
-  </p>
-)}
 
             <Button variant="outlined" color="blue" onClick={handleButtonClick}>
               Select Payment Method
             </Button>
           </div>
         </form>
-
       </Modal>
 
       <PaymentMethodsModal
@@ -302,3 +310,5 @@ const DepositModal = ({ isOpen, onClose }) => {
 };
 
 export default DepositModal;
+
+
