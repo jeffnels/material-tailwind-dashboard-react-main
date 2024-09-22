@@ -51,8 +51,8 @@ export function SignIn() {
   };
 
   return (
-  <div className="flex h-[110vh]">
-      <div className="w-[50%] h-full hidden lg:block relative">
+  <div className="flex h-[100vh]">
+      <div className="!w-[50%] h-full hidden lg:block relative">
         <img
           src={loginImg}
           className="h-full w-full object-cover"

@@ -9,19 +9,20 @@ const KycButton = () => {
   const [address, setAddress] = useState('');
   const [country, setCountry] = useState('');
   const [isOpen, setIsOpen] = useState(true);
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    dob: '',
-    idNumber: '',
-    idType: '',
-    address: '',
-    expiryDate: '',
-    frontImage: null,
-    backImage: null,
-  });
-  const [toastMessage, setToastMessage] = useState('');
+    const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    dob: '',
+    id_number: '',
+    id_type: '',
+    address: '',
+    expiry: '',
+    id_back: null,
+    country: '',
+    id_front: null,
+  });
+
 
   useEffect(() => {
     let timer;
@@ -34,12 +35,23 @@ const KycButton = () => {
   }, [toastMessage]);
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: type === 'file' ? files[0] : value,
-    }));
+    const { name, value, files } = e.target;
+  
+    if (files && files.length > 0) {  // Check if files exist and have a length
+      setFormData({
+        ...formData,
+        [name]: files[0],  // Store the selected file in formData
+      });
+      // console.log(`Selected file for ${name}:`, files[0]); 
+    } else {
+      // For other input types (text, select, etc.)
+      setFormData({
+        ...formData,
+        [name]: value,  // Update text or other values
+      });
+    }
   };
+  
 
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
@@ -49,41 +61,75 @@ const KycButton = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-  e.preventDefault();
-  console.log(formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const user = JSON.parse(localStorage.getItem('user'));
+  
+    // Example validation and submission handling
+    if (!formData.name || !formData.address) {
+      setToastMessage('Please fill in all required fields.');
+      setToastType('error');
+      return;
+    }
+  
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('dob', formData.dob);
+    data.append('address', formData.address);
+    data.append('expiry', formData.expiry);
+    data.append('id_front', formData.id_front);  // Front image file
+    data.append('id_back', formData.id_back);    // Back image file
+    data.append('user_id', user.id);
+    data.append('id_type', formData.id_type);
 
-  // Example validation and submission handling
-  if (!formData.firstName || !formData.lastName || !formData.address || !formData.idNumber) {
-    setToastMessage('Please fill in all required fields.');
-    setToastType('error');
-    return;
-  }
-
-  // Simulate form submission success
-  setToastMessage('Form submitted successfully!');
-  setToastType('success');
-
-  // Clear form inputs on successful submission
-  setFormData({
-    firstName: '',
-    lastName: '',
-    dob: '',
-    idNumber: '',
-    idType: '',
-    address: '',
-    expiryDate: '',
-    frontImage: null,
-    backImage: null,
-  });
-  setAddress('');
-  setCountry('');
+    // console.log("Form Data Before Submission:", formData);
 
   
-  setTimeout(() => {
-    setIsSecondModalOpen(false);
-  }, 3000); 
-};
+    try {
+      const response = await fetch("https://tradesphere-backend.onrender.com/api/users", {
+        method: "POST",
+        headers: {
+          "x-auth-token": localStorage.getItem("authToken"),
+          // Do not set Content-Type here
+        },
+        body: data,
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json(); // Optional: Get error details
+        throw new Error(errorData.message || "An error occurred");
+      }
+  
+      const responseData = await response.json(); // Parse the JSON response
+  
+      // Simulate form submission success
+      setToastMessage('Form submitted successfully!');
+      setToastType('success');
+  
+      // Clear form inputs on successful submission
+      setFormData({
+        name: '',
+        dob: '',
+        address: '',
+        expiry: '',
+        id_front: null,
+        id_back: null,
+      });
+      setAddress('');
+      setCountry('');
+  
+      setTimeout(() => {
+        setIsSecondModalOpen(false);
+      }, 1500);
+      
+    } catch (error) {
+      console.error("Error:", error.message);
+      setToastMessage('Failed to submit the form.'); // Optional: Show error toast
+      setToastType('error');
+    }
+  };
+  
 
 
   const modalSpring = useSpring({
@@ -104,7 +150,7 @@ const KycButton = () => {
 
 
       {isFirstModalOpen && (
-        <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
+        <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50 ">
           <div className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-[0.2] z-50">
             <div className="bg-white flex items-center justify-between rounded-lg shadow-lg p-8 flex-col relative w-full max-w-md h-[300px]">
               <button
@@ -138,14 +184,14 @@ const KycButton = () => {
 
         <animated.div style={modalSpring} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-[0.2] z-50">
-            <div className="bg-white rounded-md shadow-lg p-6 relative max-w-3xl w-full mx-4 ">
+            <div className="bg-white rounded-md shadow-lg p-6 relative max-w-xl w-full mx-4 ">
               <button
                 className="absolute top-2 right-2 text-black hover:text-red-700 text-2xl"
                 onClick={() => setIsSecondModalOpen(false)}
               >
                 &times;
               </button>
-              <h2 className="text-xl font-semibold mb-4 text-center">Identity Verification</h2>
+              <h2 className="text-xl font-semibold text-center">Identity Verification</h2>
               {toastMessage && (
                 <div className={` z-10 fixed buttom-4 right-4 p-4 rounded-lg shadow-lg text-white ${toastType === 'success' ? 'bg-green-500' : 'bg-red-700'}`}>
                   <Toast color={toastType === 'error' ? 'failure' : 'success'} onClose={() => setToastMessage('')} style={{ backgroundColor: toastType === 'error' ? 'red' : 'green', color: 'white' }}>
@@ -153,20 +199,21 @@ const KycButton = () => {
                   </Toast>
                 </div>
               )}
-              <div className="overflow-y-auto max-h-[85vh]">
-                <form className="space-y-4 p-4 max-w-md mx-auto bg-white rounded-md shadow-md" onSubmit={handleSubmit}>
+              <div className="overflow-y-auto max-h-[80vh]">
+                <form className="space-y-2 p-4 w-full mx-auto" onSubmit={handleSubmit}>
                   <div>
-                    <label className="text-sm font-medium">First Name</label>
+                    <label className="text-xs">Full Name</label>
                     <input
                       type="text"
-                      name="firstName"
+                      name="name"
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                      value={formData.firstName}
+                      value={formData.name}
                       onChange={handleChange}
+                      required
                     />
                   </div>
-                  <div>
-                    <label className="text-sm font-medium">Last Name</label>
+                  {/* <div>
+                    <label className="text-xs">Last Name</label>
                     <input
                       type="text"
                       name="lastName"
@@ -174,24 +221,26 @@ const KycButton = () => {
                       value={formData.lastName}
                       onChange={handleChange}
                     />
-                  </div>
+                  </div> */}
                   <div>
-                    <label className="text-sm font-medium">Date of Birth</label>
+                    <label className="text-xs">Date of Birth</label>
                     <input
                       type="date"
                       name="dob"
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                       value={formData.dob}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                    <div>
-                    <label className="text-sm font-medium">Type of ID</label>
+                    <label className="text-xs">Type of ID</label>
                     <select
-                      name="idType"
+                      name="id_type"
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                      value={formData.idType}
+                      value={formData.id_type}
                       onChange={handleChange}
+                      required
                     >
                       <option >select ID type</option>
                       <option value="passport">Passport</option>
@@ -199,56 +248,61 @@ const KycButton = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">ID Number</label>
+                    <label className="text-xs">ID Number</label>
                     <input
                       type="text"
-                      name="idNumber"
+                      name="id_number"
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                      value={formData.idNumber}
+                      value={formData.id_number}
                       onChange={handleChange}
+                      required
                     />
                   </div>
-                  {formData.idType === "passport" && (
+                  {formData.id_type === "passport" && (
                     <div>
-                      <label className="text-sm font-medium">Upload Passport Image</label>
+                      <label className="text-xs">Upload Passport Image</label>
                       <input
                         type="file"
-                        name="passportImage"
+                        name="id_front"
                         className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-
+                        onChange={handleChange}
+                        required
                       />
                     </div>
                   )}
-                    {formData.idType === "drivers_license" && (
+                    {formData.id_type === "drivers_license" && (
                     <>
                       <div>
-                        <label className="text-sm font-medium">Upload Document Image (front)</label>
+                        <label className="text-xs">Upload Document Image (front)</label>
                         <input
                           type="file"
-                          name="frontImage"
+                          name="id_front"
                           className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                           onChange={handleChange}
+                          required
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium">Upload Document Image (back)</label>
+                        <label className="text-xs">Upload Document Image (back)</label>
                         <input
                           type="file"
-                          name="backImage"
+                          name="id_back"
                           className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                           onChange={handleChange}
+                          required
                         />
                       </div>
                     </>
                   )}
                  
                   <div>
-                    <label className="text-sm font-medium">Country</label>
+                    <label className="text-xs">Country</label>
                     <select
                       name="country"
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
+                      required
                     >
                       <option value="">Select a country</option>
                       {/* List of countries */}
@@ -499,27 +553,28 @@ const KycButton = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Address</label>
+                    <label className="text-xs">Address</label>
                     <input
                       type="text"
                       name="address"
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                       value={address}
                       onChange={handleAddressChange}
+                      required
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Expiry Date</label>
+                    <label className="text-xs">Expiry Date</label>
                     <input
                       type="date"
-                      name="expiryDate"
+                      name="expiry"
                       className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                      value={formData.expiryDate}
+                      value={formData.expiry}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                 
-
                   <div className="col-span-2">
                     <button style={{ backgroundColor: 'black' }}
                       type="submit"

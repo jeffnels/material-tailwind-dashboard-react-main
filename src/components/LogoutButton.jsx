@@ -20,7 +20,7 @@ const LogoutButton = () => {
       <Button 
        
         onClick={openModal} 
-        className="transition-transform duration-300 transform hover:scale-105 shadow-md hover:shadow-lg w-full bg-white text-[red] border border-[red]"
+        className="transition-transform duration-300 transform shadow-md hover:shadow-lg w-full bg-white text-[red] border border-[red]"
       >
         Logout
       </Button>

@@ -29,9 +29,11 @@ const InitialsAvatar = ({ firstname, lastname }) => {
 export function Profile() {
   const [user, setUser] = useState(null);
   const [profileInfo, setProfileInfo] = useState({
-    currentPassword: "",
-    newPassword: "",
-    newPasswordConfirmation: "",
+    password: "",
+    passwordConfirmation: "",
+    firstname: "",
+    lastname: "",
+    email: "",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -56,24 +58,61 @@ export function Profile() {
     setProfileInfo({ ...profileInfo, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { currentPassword, newPassword, newPasswordConfirmation } = profileInfo;
-    if (!currentPassword || !newPassword || !newPasswordConfirmation) {
-      setToastMessage("Please fill all input fields");
+    const { password, passwordConfirmation } = profileInfo;
+    if (password !== passwordConfirmation) {
+      setToastMessage("passwords must match!");
       setToastType("error");
       return;
     }
 
-    if (newPassword !== newPasswordConfirmation) {
-      setToastMessage("New passwords do not match");
-      setToastType("error");
-      return;
-    }
+    const user = JSON.parse(localStorage.getItem('user'));
 
-    setToastMessage("Profile updated successfully");
-    setToastType("success");
+
+    try {
+      const response = await fetch(`https://tradesphere-backend.onrender.com/api/users/${user.id}`, {
+        method: "PUT",
+        headers: {
+          "x-auth-token": localStorage.getItem("authToken"),
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(profileInfo) ,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json(); // Optional: Get error details
+        throw new Error(errorData.message || "An error occurred");
+      }
+
+      const responseData = await response.json(); // Parse the JSON response
+
+      // Simulate form submission success
+      setToastMessage('Form submitted successfully!');
+      setToastType('success');
+
+      // Clear form inputs on successful submission
+      setProfileInfo(
+        {
+          email: "",
+          firstname:"",
+          lastname:"",
+          newPassword:"",
+          password:"",
+          passwordConfirmation:""
+        }
+      )
+
+
+      setTimeout(() => {
+        setIsModalOpen((prev)=> !prev);
+      }, 1500);
+    } catch (error) {
+      console.error("Error:", error.message);
+      setToastMessage('Failed to submit the form.'); // Optional: Show error toast
+      setToastType('error');
+    }
   };
 
   const openModal = () => {
@@ -101,8 +140,8 @@ export function Profile() {
   return (
     <>
 
-     {user.isVerified === 0 && <KycButton />} 
-      <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-cover bg-center bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500">
+      {user.isVerified === 0 && <KycButton />}
+      <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-cover bg-center bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 ">
         <div className="absolute inset-0 h-full w-full bg-gray-900/50" />
       </div>
       <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100 shadow-lg">
@@ -197,8 +236,8 @@ export function Profile() {
                     className="focus:outline-none focus:ring-0"
                   />
                 </div>
-                <hr className="m-4"/>
-                <div className="flex flex-col w-full">
+                <hr className="m-4" />
+                {/* <div className="flex flex-col w-full">
                   <label htmlFor="Current Password">Current Password</label>
                   <input
                     label="Current Password"
@@ -208,14 +247,14 @@ export function Profile() {
                     onChange={handleChange}
                     className="focus:outline-none focus:ring-0"
                   />
-                </div>
+                </div> */}
                 <div className="flex flex-col w-full">
                   <label htmlFor="New Password">New Password</label>
                   <input
                     label="New Password"
-                    name="newPassword"
+                    name="password"
                     type="password"
-                    value={profileInfo.newPassword}
+                    value={profileInfo.password}
                     onChange={handleChange}
                     className="focus:outline-none focus:ring-0"
                   />
@@ -224,9 +263,9 @@ export function Profile() {
                   <label htmlFor="Confirm New Password">Confirm New Password</label>
                   <input
                     label="Confirm New Password"
-                    name="newPasswordConfirmation"
+                    name="passwordConfirmation"
                     type="password"
-                    value={profileInfo.newPasswordConfirmation}
+                    value={profileInfo.passwordConfirmation}
                     onChange={handleChange}
                     className="focus:outline-none focus:ring-0"
                   />
@@ -264,7 +303,7 @@ export function Profile() {
         )}
       </Dialog>
 
-     
+
     </>
   );
 }
