@@ -107,104 +107,61 @@ export const Plans = () => {
     setAmount(event.target.value);
   };
 
-  const handleDone = () => {
+const handleDone = async () => {
   setLoading(true);
 
-  // Retrieve user data from localStorage
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (!user || isNaN(user.amount)) {
-    setToastMessage('User data not found or invalid.');
+  // Retrieve token and user data from localStorage
+  const authToken = localStorage.getItem('authToken'); 
+  const user = JSON.parse(localStorage.getItem('user')); // Ensure the user object is retrieved
+
+  if (!authToken || !user) {
+    setToastMessage('User or token not found, please login.');
     setToastType('error');
     setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-      setLoading(false);
-    }, 3000);
-    return;
-  }
-
-  const userAmount = parseFloat(user.amount);
-  const minAmount = parseFloat(selectedPlan.amount.split('-')[0].replace('$', '').replace(',', ''));
-  const maxAmount = parseFloat(selectedPlan.amount.split('-')[1].replace('$', '').replace(',', ''));
-  const enteredAmount = parseFloat(amount.replace('$', '').replace(',', ''));
-
-  // Check if user's amount is sufficient for the minimum plan amount
-  if (userAmount < minAmount || !userAmount) {
-    setToastMessage('Insufficient funds.');
-    setToastType('error');
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-      setAmount(''); // Clear the amount input
-      setPaymentMethod(''); // Clear the payment method
-      closeModal(); // Close the current modal
-      setDepositModalOpen(true); // Open the deposit modal
-    }, 1000);
-    setLoading(false);
-    return;
-  }
-
-  // Check if entered amount is more than the user's available amount
-  if (enteredAmount > userAmount) {
-    setToastMessage('Insufficient funds.');
-    setToastType('error');
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-      setAmount(''); // Clear the amount input
-      setPaymentMethod(''); // Clear the payment method
-      setDepositModalOpen(true); // Open the deposit modal
-    }, 3000);
-    setLoading(false);
-    return;
-  }
-
-  // Check if entered amount is within the plan range
-  if (enteredAmount < minAmount || enteredAmount > maxAmount) {
-    setToastMessage(`Amount should be between $${minAmount} and $${maxAmount}.`);
-    setToastType('error');
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-      setAmount(''); // Clear the amount input
-      setPaymentMethod(''); // Clear the payment method
-    }, 3000);
     setLoading(false);
     return;
   }
 
   try {
-    // Simulate a successful transaction creation
-    const transaction = {
-      amount: amount,
-      type: 'credit',
-      package: selectedPlan.name,
-    };
+    const response = await fetch('https://tradesphere-backend.onrender.com/api/users/buy-package', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': authToken, // Attach the token in the header
+      },
+      body: JSON.stringify({
+        userId: user.id,  // Use user.id from localStorage
+        packageType: selectedPlan.name.toLowerCase(),
+        packageAmount: amount,  // Make sure you're using the correct variable name for the entered amount
+      }),
+    });
 
-    console.log('Transaction created:', transaction);
-    setToastMessage('Your transaction has been successfully created!');
-    setToastType('success');
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-      setAmount(''); // Clear the amount input
-      setPaymentMethod(''); // Clear the payment method
-    }, 3000);
-    closeModal();
+    const data = await response.json();
+
+    if (response.ok) {
+      setToastMessage('Package purchased successfully!');
+      setToastType('success');
+    } else {
+      throw new Error(data.msg || 'Error processing your request.');
+    }
   } catch (error) {
-    console.error('Error creating transaction:', error.message);
     setToastMessage(`Error: ${error.message}`);
     setToastType('error');
+  } finally {
     setShowToast(true);
     setTimeout(() => {
       setShowToast(false);
-      setAmount(''); // Clear the amount input
-      setPaymentMethod(''); // Clear the payment method
+      setAmount('');
+      setPaymentMethod('');
     }, 3000);
-  } finally {
     setLoading(false);
+    closeModal();
   }
 };
+
+
+
+
 
 
   useEffect(() => {
@@ -284,7 +241,7 @@ export const Plans = () => {
                 placeholder="Enter Amount"
               />
             </div>
-            <div className="flex justify-center mb-4">
+            {/* <div className="flex justify-center mb-4">
               <select
                 className="border border-gray-300 rounded-lg p-2"
                 value={paymentMethod}
@@ -295,9 +252,9 @@ export const Plans = () => {
                 <option value="cashapp">CashApp</option>
                 <option value="crypto">Crypto</option>
               </select>
-            </div>
+            </div> */}
             <div className="flex justify-center">
-              <Button variant="outlined" color="blue" onClick={handleSelectPlan}>
+              <Button variant="outlined" color="blue" onClick={handleDone}>
                 Select Plan
               </Button>
             </div>
