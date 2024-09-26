@@ -190,7 +190,7 @@ const handleDone = async () => {
             {plans.map((plan, index) => (
               <div key={index} className="bg-white p-6 rounded-xl shadow-md">
                 <Typography variant="h5" className="font-bold mb-4 text-center">
-                  {plan.name}
+                  {plan.name} 
                 </Typography>
                 <Typography variant="paragraph" className="text-center mb-4">
                   Amount: {plan.amount}
