@@ -223,13 +223,13 @@ const handleDone = async () => {
             <Typography variant="h4" className="text-center font-bold mb-4">
               {selectedPlan.name}
             </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
+            <Typography variant="paragraph" className="text-center mb-4 font-semibold">
               Amount: {selectedPlan.amount}
             </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
+            <Typography variant="paragraph" className="text-center mb-4 font-semibold">
               Return: {selectedPlan.return}
             </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
+            <Typography variant="paragraph" className="text-center mb-4 font-semibold">
               Duration: {selectedPlan.duration}
             </Typography>
             <div className="flex justify-center mb-4">
