@@ -205,7 +205,7 @@ const handleDone = async () => {
                   <Button
                     variant="outlined"
                     color="blue"
-                    className="mt-4"
+                    className="mt-4 w-full"
                     onClick={() => openModal(plan)}
                   >
                     Choose Plan
@@ -223,19 +223,19 @@ const handleDone = async () => {
             <Typography variant="h4" className="text-center font-bold mb-4">
               {selectedPlan.name}
             </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
+            <Typography variant="paragraph" className="text-center mb-4 font-semibold">
               Amount: {selectedPlan.amount}
             </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
+            <Typography variant="paragraph" className="text-center mb-4 font-semibold">
               Return: {selectedPlan.return}
             </Typography>
-            <Typography variant="paragraph" className="text-center mb-4">
+            <Typography variant="paragraph" className="text-center mb-4 font-semibold">
               Duration: {selectedPlan.duration}
             </Typography>
             <div className="flex justify-center mb-4">
               <input
                 type="number"
-                className="border border-gray-300 rounded-lg p-2"
+                className="border border-gray-300 rounded-lg p-2 w-full"
                 value={amount}
                 onChange={handleAmountChange}
                 placeholder="Enter Amount"
@@ -254,7 +254,7 @@ const handleDone = async () => {
               </select>
             </div> */}
             <div className="flex justify-center">
-              <Button variant="outlined" color="blue" onClick={handleDone}>
+              <Button variant="outlined" color="blue" onClick={handleDone} className='w-full'>
                 Select Plan
               </Button>
             </div>
@@ -307,7 +307,7 @@ const handleDone = async () => {
           Please proceed with the crypto payment instructions.
         </Typography>
         <div className="flex justify-center mt-4">
-          <Button variant="outlined" color="blue" onClick={handleDone}>
+          <Button variant="outlined" color="blue" onClick={handleDone} className='w-full'>
             Done
           </Button>
         </div>
