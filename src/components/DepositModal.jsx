@@ -248,7 +248,6 @@ const DepositModal = ({ isOpen, onClose }) => {
         {successMessage && (
           <p className="text-green-500 text-center mb-2">{successMessage}</p>
         )}
-
         <form onSubmit={(e) => e.preventDefault()} className="relative">
           <div className="flex flex-col space-y-4">
             {user && (
@@ -283,13 +282,27 @@ const DepositModal = ({ isOpen, onClose }) => {
               onChange={handleAmountChange}
               placeholder="Enter amount"
               className="border border-gray-300 rounded-lg p-2"
+                name="amount"
             />
 
+            {/* Payment Method Dropdown */}
+            <select
+              value={selectedPaymentMethod || ''}
+              className="border border-gray-300 rounded-lg p-2 bg-white"
+                name="method"
+            >
+              <option value="" disabled>Select a payment method</option>
+              <option value="crypto">Crypto</option>
+              <option value="cashapp">CashApp</option>
+              <option value="bank">Bank</option>
+            </select>
+
             <Button variant="outlined" color="blue" onClick={handleButtonClick}>
-              Select Payment Method
+              Proceed
             </Button>
           </div>
         </form>
+
       </Modal>
 
       <PaymentMethodsModal
