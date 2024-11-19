@@ -34,7 +34,7 @@ const PaymentMethodsModal = ({ isOpen, onClose, onSelectPaymentMethod }) => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <div className=" mx-auto p-4 bg-white rounded-lg shadow-lg">
       <Typography variant="h4" className="text-center font-bold mb-4">
-        Select Payment Method
+        Confirm Payment Method
       </Typography>
       <div className="flex flex-col space-y-4">
         <Button variant="outlined" color="blue" onClick={() => onSelectPaymentMethod('crypto')}>
