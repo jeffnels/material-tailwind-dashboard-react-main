@@ -6,6 +6,7 @@ import Loader from '@/components/Loader';
 import { Toast } from 'flowbite-react';
 import DepositModal from '@/components/DepositModal';
 import { XMarkIcon } from "@heroicons/react/24/outline";
+
 const plans = [
   {
     name: "Basic Portfolio Plan",
