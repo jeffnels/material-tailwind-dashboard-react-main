@@ -286,7 +286,7 @@ const DepositModal = ({ isOpen, onClose }) => {
             />
 
             {/* Payment Method Dropdown */}
-            <select
+            {/* <select
               value={selectedPaymentMethod || ''}
               className="border border-gray-300 rounded-lg p-2 bg-white"
                 name="method"
@@ -295,7 +295,7 @@ const DepositModal = ({ isOpen, onClose }) => {
               <option value="crypto">Crypto</option>
               <option value="cashapp">CashApp</option>
               <option value="bank">Bank</option>
-            </select>
+            </select> */}
 
             <Button variant="outlined" color="blue" onClick={handleButtonClick}>
               Proceed
